@@ -52,6 +52,11 @@ add_executable(dflat
 	Problem.cpp
 	Row.cpp
 	EnumerationIterator.cpp
-	main.cpp)
+	main.cpp
+	AlgorithmSelector.cpp
+	TreeWidthExtractor.cpp
+	FeatureExtractor.cpp
+	FeatureExtractor.cpp
+	)
 
 target_link_libraries(dflat libsharp.a gringo clasp gmp gmpxx ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_TIMER_LIBRARY})

@@ -22,7 +22,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <sharp/main>
 #include <clasp/clasp_facade.h>
-
+#define PORTFOLIO_SIZE 3
 class GringoOutputProcessor;
 
 class Algorithm : public sharp::AbstractHTDAlgorithm
@@ -31,6 +31,8 @@ public:
 	//! @param ignoreOptimization true iff the predicates responsible for optimization problems should be ignored (e.g., cost/1, currentCost/1)
 	Algorithm(sharp::Problem& problem, const std::string& instanceFacts, sharp::NormalizationType normalizationType, bool ignoreOptimization = false, bool multiLevel = false);
 
+	enum portfolio {none,jumpy,frumpy,crafty};
+	void setPortfolio(portfolio p);
 protected:
 	//! @return the file name of the user program to compute node's table
 	virtual const char* getUserProgram(const sharp::ExtendedHypertree& node) = 0;
@@ -51,12 +53,16 @@ protected:
 	virtual std::auto_ptr<Clasp::ClaspFacade::Callback> newClaspCallback(sharp::Table& newTable, const GringoOutputProcessor&, const std::vector<sharp::Table*>& childTables, const sharp::VertexSet& currentVertices) const;
 	virtual std::auto_ptr<GringoOutputProcessor> newGringoOutputProcessor() const;
 
+	void jumpyConfig(Clasp::ClaspConfig &config);
+	void frumpyConfig(Clasp::ClaspConfig &config);
+	void craftyConfig(Clasp::ClaspConfig &config);
 	sharp::Problem& problem;
 	const std::string& instanceFacts;
 	sharp::NormalizationType normalizationType;
 	bool ignoreOptimization;
 	bool multiLevel;
 	Clasp::ClaspFacade clasp;
+	portfolio master;
 
 #ifdef PROGRESS_REPORT
 	int nodesProcessed; // For progress report

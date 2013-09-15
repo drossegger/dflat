@@ -1,0 +1,23 @@
+<config>
+	<dflat>/home/dino/workspace/projdbai/dflat-0.2/build/release/dflat</dflat>
+	<portfolio>jumpy</portfolio>
+	<portfolio>frumpy</portfolio>
+	<portfolio>crafty</portfolio>
+	<portfolio>none</portfolio>
+	<instances>
+		<instance>
+			<join-program>/home/dino/workspace/projdbai/instances/asp_encodings-0.2/belief-revision/dynamic.lp</join-program>
+			<edge>pos</edge>
+			<edge>neg</edge>
+			<multi-level></multi-level>
+			<input-file>/home/dino/workspace/projdbai/instances/belief-revision/instance3.lp</input-file>
+		</instance>
+	</instances>
+	<features>
+		<feature name='tw'>
+			<size>2</size>
+			<min>3</min>
+			<max>10</max>
+		</feature>
+	</features>
+</config>

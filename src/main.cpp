@@ -32,6 +32,8 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 #include "NonNormalizedAlgorithm.h"
 #include "SemiNormalizedAlgorithm.h"
 #include "EnumerationIterator.h"
+#include "AlgorithmSelector.h"
+#include "TreeWidthExtractor.h"
 
 namespace {
 	const int CONSISTENT = 10;
@@ -75,12 +77,14 @@ int main(int argc, char** argv)
 		time_t seed = time(0);
 		sharp::NormalizationType normalizationType = sharp::NoNormalization;
 		bool onlyDecompose = false;
+		bool onlyFeatureExtract=false;
 		bool stats = false;
 		const char* program = 0;
 		const char* exchangeProgram = 0;
 		const char* joinProgram = 0;
 		std::set<std::string> hyperedgePredicateNames;
-
+		std::string sportfolio;
+		Algorithm::portfolio master;
 		for(int i = 1; i < argc; ++i) {
 			bool hasArg = i+1 < argc;
 			std::string arg = argv[i];
@@ -141,6 +145,24 @@ int main(int argc, char** argv)
 				else
 					exchangeProgram = argv[++i];
 			}
+			else if(arg == "--portfolio" && hasArg)
+			{
+				sportfolio=argv[++i];
+				if(sportfolio== "jumpy") {
+				  master=Algorithm::jumpy;
+				}
+				else if(sportfolio== "frumpy") {
+				  master=Algorithm::frumpy;
+				}
+				else if(sportfolio== "crafty"){
+					master=Algorithm::crafty;
+				}
+				else{
+					master=Algorithm::none;
+				}
+			}
+			else if (arg=="--only-extract")onlyFeatureExtract=true;
+
 			else {
 				if(program)
 					usage(argv[0]);
@@ -166,6 +188,22 @@ int main(int argc, char** argv)
 		Problem problem(inputString, hyperedgePredicateNames);
 
 		sharp::ExtendedHypertree* decomposition = problem.calculateHypertreeDecomposition();
+		std::list<FeatureExtractor*> felist;
+		felist.push_back(new TreeWidthExtractor("tw",decomposition));
+		if(onlyFeatureExtract){
+			cout << "begin features" << endl;
+			int r=0;
+			for(list<FeatureExtractor*>::iterator it=felist.begin();it!=felist.end();++it){
+				(*it)->extract(&r);	
+				cout << (*it)->getName() << ";" << r << endl;
+			}
+			cout << "end features" << endl;
+			return 0;
+		}
+
+		AlgorithmSelector aselector(felist);
+		aselector.select();
+
 
 		if(stats) {
 			std::cout << "Decomposition stats:" << std::endl;
@@ -194,10 +232,16 @@ int main(int argc, char** argv)
 		}
 
 		std::auto_ptr<Algorithm> algorithm;
-		if(exchangeProgram)
-			algorithm.reset(new SemiNormalizedAlgorithm(problem, inputString, exchangeProgram, joinProgram, normalizationType, ignoreOptimization, multiLevel));
-		else
-			algorithm.reset(new NonNormalizedAlgorithm(problem, inputString, program, normalizationType, ignoreOptimization, multiLevel));
+		if(exchangeProgram){
+		  SemiNormalizedAlgorithm* sna=new SemiNormalizedAlgorithm(problem, inputString, exchangeProgram, joinProgram, normalizationType, ignoreOptimization, multiLevel);
+			sna->setPortfolio(master);
+			algorithm.reset(sna);
+		}
+		else{
+			NonNormalizedAlgorithm* na=new NonNormalizedAlgorithm(problem, inputString, program, normalizationType, ignoreOptimization, multiLevel);
+			na->setPortfolio(master);
+			algorithm.reset(na);
+		}
 
 		std::auto_ptr<sharp::Table> table(problem.calculateTableFromDecomposition(algorithm.get(), decomposition));
 

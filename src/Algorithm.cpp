@@ -43,6 +43,9 @@ Algorithm::Algorithm(sharp::Problem& problem, const std::string& instanceFacts, 
 {
 }
 
+void Algorithm::setPortfolio(Algorithm::portfolio p){
+	master=p;
+}
 void Algorithm::declareBag(std::ostream& out, const sharp::ExtendedHypertree& node)
 {
 	for(unsigned i = 0; i < node.getChildren()->size(); ++i)
@@ -117,20 +120,91 @@ Table* Algorithm::computeTable(const sharp::ExtendedHypertree& node, const std::
 	inputStreams.appendStream(Streams::StreamPtr(bag), "<bag>");
 	inputStreams.appendStream(Streams::StreamPtr(childTableInput), "<child_rows>");
 	inputStreams.appendStream(Streams::StreamPtr(auxiliaryRulesInput), "<aux_rules>");
-
 	// Call the ASP solver
 	std::auto_ptr<GringoOutputProcessor> outputProcessor = newGringoOutputProcessor();
 	ClaspInputReader inputReader(inputStreams, *outputProcessor);
 	std::auto_ptr<Clasp::ClaspFacade::Callback> cb = newClaspCallback(*newTable, *outputProcessor, childTables, node.getVertices());
 	Clasp::ClaspConfig config;
+	if (master==jumpy)jumpyConfig(config);
+	else if(master==frumpy)frumpyConfig(config);
+	else if(master==crafty)craftyConfig(config);
+
+
+	std::string validationstring;
+	if (!config.validate(*config.master(),validationstring))cout << "ERROR" << endl;
+	cout << endl << validationstring << endl;
 //	config.master()->heuristic().name = "none"; // before clasp 2.1.1
 //	config.master()->solver->strategies().heuId = Clasp::ClaspConfig::heu_none; // for clasp 2.1.1, but it seems switching the heuristic off does not pay off anymore...?
 	config.enumerate.numModels = 0;
+	config.enumerate.project = true;
+	config.applyHeuristic();
 	clasp.solve(inputReader, config, cb.get());
 
 	return newTable;
 }
+void Algorithm::jumpyConfig(Clasp::ClaspConfig & config)
+{
+		config.master()->solver->strategies().heuId     = Clasp::ClaspConfig::heu_vsids; //heuristic
+		config.master()->solver->strategies().updateLbd = 3; //update-lbd
+		config.master()->solver->strategies().strRecursive = true; //strengthen
+		config.master()->solver->strategies().otfs = 2; //otfs
+		config.master()->solver->strategies().saveProgress = 70; //save-progress
 
+		config.master()->params.reduce.strategy.fReduce = 75; //deletion 2
+		config.master()->params.reduce.strategy.score   = Clasp::ReduceStrategy::reduce_linear; //del-algo
+		config.master()->params.reduce.strategy.algo    = 2; //del-algo
+		config.master()->params.reduce.strategy.glue    = 2; //del-glue
+
+		config.master()->params.reduce.initRange.lo     = 1000; //del-init-r 1
+		config.master()->params.reduce.initRange.hi     = 21000; //del-init-r 2
+		config.master()->params.reduce.fGrow			      = 1.1; //del-grow
+		config.master()->params.reduce.fMax 			      = 25; //del-grow
+		config.master()->params.reduce.growSched	      = Clasp::ScheduleStrategy::geom(100,1.5); //del-grow
+		config.master()->params.reduce.cflSched	        = Clasp::ScheduleStrategy::geom(10000,1.1); //del-cfl
+		config.master()->params.restart.sched           = Clasp::ScheduleStrategy::luby(100); //restarts
+ 
+}
+void Algorithm::frumpyConfig(Clasp::ClaspConfig & config)
+{
+		config.master()->solver->strategies().heuId     = Clasp::ClaspConfig::heu_berkmin; //heuristic
+		config.master()->solver->strategies().strRecursive = false; //strengthen
+		config.master()->solver->strategies().saveProgress = 180; //save-progress
+		config.master()->solver->strategies().loopRep=Clasp::DefaultUnfoundedCheck::common_reason;//loops
+		config.master()->solver->strategies().compress=250;//contractions
+
+		config.master()->params.reduce.growSched				=	Clasp::ScheduleStrategy::none(); //deletion 1
+		config.master()->params.reduce.fMax=0;
+		config.master()->params.reduce.strategy.fReduce = 75; //deletion 2
+		config.master()->params.reduce.strategy.score   = Clasp::ReduceStrategy::reduce_linear; //del-algo
+		config.master()->params.reduce.initRange.lo     = 200; //del-init-r 1
+		config.master()->params.reduce.initRange.hi     = 40200; //del-init-r 2
+		config.master()->params.reduce.fGrow			      = 1.1; //del-grow
+		config.master()->params.restart.sched           = Clasp::ScheduleStrategy::geom(100,1.5); //restarts
+ 
+}
+void Algorithm::craftyConfig(Clasp::ClaspConfig & config)
+{
+		config.master()->solver->strategies().heuId     = Clasp::ClaspConfig::heu_vsids; //heuristic
+		config.master()->solver->strategies().strRecursive = false; //strengthen
+		config.master()->solver->strategies().saveProgress = 180; //save-progress
+		config.master()->solver->strategies().loopRep=Clasp::DefaultUnfoundedCheck::common_reason;//loops
+		config.master()->solver->strategies().compress=250;//contractions
+
+		config.master()->params.reduce.strategy.glue    = 2; //del-glue
+		config.master()->solver->strategies().otfs = 2; //otfs
+		config.master()->solver->strategies().compress = 250; //contraction
+		config.master()->solver->strategies().reverseArcs = 1; //reverse-arcs
+		config.master()->params.reduce.strategy.fReduce = 75; //deletion 2
+		config.master()->params.reduce.fMax 			      = 20; //del-grow
+		config.master()->params.reduce.fInit=(float)0.1;
+		config.master()->params.reduce.strategy.score   = Clasp::ReduceStrategy::reduce_linear; //del-algo
+		config.master()->params.reduce.initRange.lo     = 1000; //del-init-r 1
+		config.master()->params.reduce.initRange.hi     = 10000; //del-init-r 2
+		config.master()->params.reduce.fGrow			      = 1.1; //del-grow
+		config.master()->params.restart.sched           = Clasp::ScheduleStrategy::geom(128,1.5); //restarts
+		config.master()->params.restart.counterRestart = 3;
+		config.master()->params.reduce.cflSched	        = Clasp::ScheduleStrategy::arith(1000,1000); //del-cfl
+}
 Table* Algorithm::evaluateNode(const sharp::ExtendedHypertree* node)
 {
 	std::vector<Table*> childTables;
