@@ -50,6 +50,8 @@ namespace {
 		std::cerr << "  " << std::setw(w) << "--only-decompose: " << "Only perform decomposition and do not solve (useful with --stats)" << std::endl;
 		// TODO: Add problem types "search" and "opt-search", ideally with incremental solving
 		std::cerr << "  " << std::setw(w) << "-p problem_type: " << "Either \"enumeration\" (default), \"counting\", \"decision\", \"opt-enum\", \"opt-counting\" or \"opt-value\"" << std::endl;
+		std::cerr << "  " << std::setw(w) << "--portfolio: " << "Specify the portfolio for clasp. Use: \"none\", \"jumpy\", \"crafty\", \"frumpy\" or \"auto\" for automatic selection of the best portfolio using algorithm selection" << std::endl;
+		std::cerr << "  " << std::setw(w) << "--only-extract: " << "Only extract features of the instance" << std::endl;
 		std::cerr << "  " << std::setw(w) << "-s seed: " << "Initialize random number generator with <seed>" << std::endl;
 		std::cerr << "  " << std::setw(w) << "--stats: " << "Print statistics" << std::endl;
 		std::cerr << "  " << std::setw(w) << "-x exchange_program: " << "File name of the logic program executed in exchange nodes (only for semi-normalized decompositions)" << std::endl;

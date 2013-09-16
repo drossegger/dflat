@@ -1,0 +1,19 @@
+D-FLAT with Algorithm Selection
+
+1. USAGE
+
+In learner/ you can find tools to "train" D-FLAT. Set parameters, features and training instances in learner/config.xml.
+Afterwards run
+	learner/dflat-learner.py
+This will analyze the features of your instances and compare the runtime of the different portfolios. At the moment D-FLAT supports jumpy, frumpy and crafty. These behave similar to the clasp configurations with the same name.
+When you have done enough training run 
+	learner/dflat-learner.py --finalize
+	to generate and optimize the training files for D-FLAT.
+
+If you run D-FLAT with the option "--portfolio auto" the algorithm selection module of D-FLAT will use the best portfolio based on the training files generated.
+
+2. FEATURES
+
+At the moment the only feature implemented is Treewidth. You can implement your own features by defining a class inherting from FeatureExtractor and afterwards adding an instance in main. However this goes beyond this readme file.
+
+Furthermore the algorithm selector of D-FLAT is currently only able to select the best portfolio based on one feature.
