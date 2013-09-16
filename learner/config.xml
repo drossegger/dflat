@@ -1,5 +1,5 @@
 <config>
-	<dflat>/home/dino/workspace/projdbai/dflat-0.2/build/release/dflat</dflat>
+	<dflat>/home/dino/workspace/dflat/build/release/dflat</dflat>
 	<portfolio>jumpy</portfolio>
 	<portfolio>frumpy</portfolio>
 	<portfolio>crafty</portfolio>

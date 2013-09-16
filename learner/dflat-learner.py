@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from timeit import Timer
 import xml.etree.ElementTree as ET
-import subprocess,re,os
+import subprocess,re,os,sys
 
 def buildProgramString(instance):
 	arg=['-s','1','-p','counting']
@@ -73,23 +73,68 @@ def writeCSV(portfolios,features,performance):
 				f.write(';'.join([str(x) for x in feature+performance])+'\n')
 				f.close()
 
+def finalize(features):
+	for xmlfeature in features.iter('feature'):
+		feature=xmlfeature.attrib.get('name')
+		if(os.path.exists(feature+'.csv')):
+			f=open(feature+'.csv','r')
+			featurelines=f.read().splitlines();
+			performance=[line.split(';') for line in featurelines]
+			firstline=performance.pop(0)	
+			performance=[[float(val) for val in line] for line in performance]
+			indeces=set([val[0] for val in performance])
+
+			finPerformance=[]
+			for index in indeces:
+				indexentry=[line for line in performance if line[0]==index]
+				portfolioperformances=[]	
+				for colindex in range(2,len(indexentry[0])):
+					col=[row[colindex] for row in indexentry]
+					portfolioperformances.append(sum(col)/len(col))
+				myhelper=[indexentry[0][0],indexentry[0][1]]+portfolioperformances
+				finPerformance.append(myhelper)
+			f.close()
+			f=open(feature+'.csv','w')
+			f.write(';'.join(firstline)+'\n')
+			for line in finPerformance:
+				line=[str(val) for val in line]
+				f.write(';'.join(line)+'\n')
+			f.close()
+		else:
+			print 'Error, featurefile not found'
+			quit()
+
+
+
 tree=ET.parse('config.xml')
 root=tree.getroot()
-portfolios=['','']+[portfolio.text for portfolio in root.iter('portfolio')]
-for instance in root.iter('instance'):
-	arg=[root.find('dflat').text]+buildProgramString(instance)
-	times=[]
-	features=extractFeatures(arg,root.find('features'))
-	for portfolio in root.iter('portfolio'):
-		arg.insert(1,portfolio.text)
-		arg.insert(1,'--portfolio')
-		print ' '.join(arg)
-		t=Timer('subprocess.call("%s",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)' % ' '.join(arg),setup='import subprocess')
-		arg.pop(1)
-		arg.pop(1)
-		times.append(min(t.repeat(repeat=4,number=1)))
-	print features
-	print min(times)
-	print [x/min(times) for x in times]
-	writeCSV(portfolios,features,[x/min(times) for x in times])
+if(len(sys.argv)==2):
+	if(sys.argv[1]=='--finalize'):
+		finalize(root.find('features'))
+	else:
+		print 'Wrong command line arguments'
+		quit()
+elif(len(sys.argv)>2):
+	print 'Wrong command line arguments'
+	quit()
+else:
+	tree=ET.parse('config.xml')
+	root=tree.getroot()
+	portfolios=['','']+[portfolio.text for portfolio in root.iter('portfolio')]
+	for instance in root.iter('instance'):
+		arg=[root.find('dflat').text]+buildProgramString(instance)
+		times=[]
+		features=extractFeatures(arg,root.find('features'))
+		for portfolio in root.iter('portfolio'):
+			arg.insert(1,portfolio.text)
+			arg.insert(1,'--portfolio')
+			print ' '.join(arg)
+			t=Timer('subprocess.call("%s",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)' % ' '.join(arg),setup='import subprocess')
+			arg.pop(1)
+			arg.pop(1)
+			times.append(min(t.repeat(repeat=4,number=1)))
+		print features
+		print min(times)
+		print [x/min(times) for x in times]
+		writeCSV(portfolios,features,[x/min(times) for x in times])
 
