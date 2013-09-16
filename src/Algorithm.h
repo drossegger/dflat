@@ -22,7 +22,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <sharp/main>
 #include <clasp/clasp_facade.h>
-#define PORTFOLIO_SIZE 3
+#define PORTFOLIO_SIZE 4
 class GringoOutputProcessor;
 
 class Algorithm : public sharp::AbstractHTDAlgorithm

@@ -85,6 +85,7 @@ int main(int argc, char** argv)
 		std::set<std::string> hyperedgePredicateNames;
 		std::string sportfolio;
 		Algorithm::portfolio master;
+		bool useAlgorithmSelector=false;
 		for(int i = 1; i < argc; ++i) {
 			bool hasArg = i+1 < argc;
 			std::string arg = argv[i];
@@ -157,6 +158,9 @@ int main(int argc, char** argv)
 				else if(sportfolio== "crafty"){
 					master=Algorithm::crafty;
 				}
+				else if(sportfolio== "auto"){
+					useAlgorithmSelector=true;
+				}
 				else{
 					master=Algorithm::none;
 				}
@@ -201,8 +205,11 @@ int main(int argc, char** argv)
 			return 0;
 		}
 
-		AlgorithmSelector aselector(felist);
-		aselector.select();
+		if(useAlgorithmSelector){
+			AlgorithmSelector aselector(felist);
+			master=aselector.select();
+			//cout << "selected Portfolio: " << master << endl;
+		}
 
 
 		if(stats) {
