@@ -34,7 +34,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 #include "EnumerationIterator.h"
 #include "AlgorithmSelector.h"
 #include "TreeWidthExtractor.h"
-
+#include "NumberOfRulesExtractor.h"
 namespace {
 	const int CONSISTENT = 10;
 	const int INCONSISTENT = 20;
@@ -195,7 +195,12 @@ int main(int argc, char** argv)
 
 		sharp::ExtendedHypertree* decomposition = problem.calculateHypertreeDecomposition();
 		std::list<FeatureExtractor*> felist;
+		vector<string> programvector;
+		cout << "Program: " << program<< endl;
+		programvector.push_back(program);
+		programvector.push_back(inputString);
 		felist.push_back(new TreeWidthExtractor("tw",decomposition));
+		felist.push_back(new NumberOfRulesExtractor("nor",programvector));
 		if(onlyFeatureExtract){
 			cout << "begin features" << endl;
 			int r=0;
@@ -210,7 +215,7 @@ int main(int argc, char** argv)
 		if(useAlgorithmSelector){
 			AlgorithmSelector aselector(felist);
 			master=aselector.select();
-			//cout << "selected Portfolio: " << master << endl;
+			cout << "selected Portfolio: " << master << endl;
 		}
 
 

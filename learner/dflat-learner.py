@@ -24,8 +24,8 @@ def extractFeatures(arg,features):
 	arg.insert(1,'--only-extract')
 	output=subprocess.check_output(' '.join(arg),shell=True)
 	arg.pop(1)
-	p=re.compile('begin features\n(.*)\nend features.*')
-	lines=p.match(output).group(1).splitlines()
+	p=re.compile(r'(.*\n)*begin features\n((.*\n)+)end features\n(.*\n)*',re.MULTILINE)
+	lines=p.match(output).group(2).splitlines()
 	lines=[x.split(';') for x in lines]
 	for line in lines:
 		feature=features.find('./feature[@name="'+line[0]+'"]')
@@ -132,7 +132,7 @@ else:
 			t=Timer('subprocess.call("%s",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)' % ' '.join(arg),setup='import subprocess')
 			arg.pop(1)
 			arg.pop(1)
-			times.append(min(t.repeat(repeat=4,number=1)))
+			times.append(min(t.repeat(repeat=1,number=1)))
 		print features
 		print min(times)
 		print [x/min(times) for x in times]
