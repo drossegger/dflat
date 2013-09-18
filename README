@@ -12,8 +12,12 @@ When you have done enough training run
 
 If you run D-FLAT with the option "--portfolio auto" the algorithm selection module of D-FLAT will use the best portfolio based on the training files generated.
 
-2. FEATURES
+2. REQUIREMENTS
 
-At the moment the only feature implemented is Treewidth. You can implement your own features by defining a class inherting from FeatureExtractor and afterwards adding an instance in main. However this goes beyond this readme file.
+Binaries of claspre and gringo need to be in tools/bin for the Feature Extraction to work.
+
+3. FEATURES
+
+At the moment the DecompositionWidth and the number of rules are implemented as features. You can implement your own features by defining a class inherting from FeatureExtractor and afterwards adding an instance in main. However this goes beyond this readme file.
 
 Furthermore the algorithm selector of D-FLAT is currently only able to select the best portfolio based on one feature.
