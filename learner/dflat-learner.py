@@ -38,8 +38,14 @@ def extractFeatures(arg,features):
 				size=float(size.text)
 				limitLo=int(line[1]/size)*size
 				limitHi=round(line[1]/size)*size
-				maxval=float(feature.find('max').text)
-				minval=float(feature.find('min').text)
+				if(feature.find('max')!=None):
+					maxval=float(feature.find('max').text)
+				else:
+					maxval=1000000
+				if(feature.find('min')!=None):
+					minval=float(feature.find('min').text)
+				else:
+					minval=0
 				if line[1]<minval:
 					line[1]=0
 					line.append(minval)
@@ -103,38 +109,48 @@ def finalize(features):
 		else:
 			print 'Error, featurefile not found'
 			quit()
+def learn(root,numberseeds):
+	portfolios=['','']+[portfolio.text for portfolio in root.iter('portfolio')]
+	for instance in root.iter('instance'):
+		arg=[root.find('dflat').text]+buildProgramString(instance)
+		for seed in range(numberseeds):
+			times=[]
+			features=extractFeatures(arg,root.find('features'))
+			print features
+			for portfolio in root.iter('portfolio'):
+				arg[2]=''+str(seed)
+				arg.insert(1,portfolio.text)
+				arg.insert(1,'--portfolio')
+				print ' '.join(arg)
+				t=Timer('subprocess.call("%s",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)' % ' '.join(arg),setup='import subprocess')
+				arg.pop(1)
+				arg.pop(1)
+				times.append(min(t.repeat(repeat=1,number=1)))
+			print features
+			print min(times)
+			print [x/min(times) for x in times]
+			writeCSV(portfolios,features,[x/min(times) for x in times])
 
 
 
 tree=ET.parse('config.xml')
-root=tree.getroot()
-if(len(sys.argv)==2):
+if len(sys.argv)==2 :
 	if(sys.argv[1]=='--finalize'):
 		finalize(root.find('features'))
 	else:
 		print 'Wrong command line arguments'
 		quit()
-elif(len(sys.argv)>2):
+elif len(sys.argv)==3 :
+	if sys.argv[1]=="--seeds" :
+		learn(tree.getroot(),int(sys.argv[2]))
+	else:
+		print 'Wrong command line arguments'
+		quit()
+elif len(sys.argv)>3:
 	print 'Wrong command line arguments'
 	quit()
 else:
-	tree=ET.parse('config.xml')
-	root=tree.getroot()
-	portfolios=['','']+[portfolio.text for portfolio in root.iter('portfolio')]
-	for instance in root.iter('instance'):
-		arg=[root.find('dflat').text]+buildProgramString(instance)
-		times=[]
-		features=extractFeatures(arg,root.find('features'))
-		for portfolio in root.iter('portfolio'):
-			arg.insert(1,portfolio.text)
-			arg.insert(1,'--portfolio')
-			print ' '.join(arg)
-			t=Timer('subprocess.call("%s",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)' % ' '.join(arg),setup='import subprocess')
-			arg.pop(1)
-			arg.pop(1)
-			times.append(min(t.repeat(repeat=1,number=1)))
-		print features
-		print min(times)
-		print [x/min(times) for x in times]
-		writeCSV(portfolios,features,[x/min(times) for x in times])
+	learn(tree.getroot(),1)
+
+
 
