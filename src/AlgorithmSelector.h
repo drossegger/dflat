@@ -16,7 +16,7 @@ class AlgorithmSelector{
 		std::list<FeatureExtractor*>& features;
 		
 		int findMax(float* input,int size);
-		std::vector<std::string> readPerformance(std::string spath,int feature);
+		std::vector<std::string> readPerformance(std::string spath,double feature);
 };
 
 #endif

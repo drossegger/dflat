@@ -6,7 +6,7 @@ NumberOfRulesExtractor::NumberOfRulesExtractor(string name,vector<string> files)
 	programfiles=files;
 		featurename=name;
 }
-bool NumberOfRulesExtractor::extract(int* r){
+bool NumberOfRulesExtractor::extract(double* r){
 	string gringoPath="/home/dino/workspace/dflat/tools/bin/gringo";
 	string clasprePath="/home/dino/workspace/dflat/tools/bin/claspre";
 	string fileString="";

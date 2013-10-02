@@ -5,7 +5,7 @@
 class TreeWidthExtractor : public FeatureExtractor{
 	public:
 		TreeWidthExtractor(std::string name, sharp::ExtendedHypertree* e);
-		bool extract(int* r);
+		bool extract(double* r);
 	private:
 		sharp::ExtendedHypertree* instance;
 };

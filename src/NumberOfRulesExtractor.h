@@ -9,7 +9,7 @@
 class NumberOfRulesExtractor:public FeatureExtractor{
 	public:
 		NumberOfRulesExtractor(std::string name, std::vector<std::string> files);
-		bool extract(int* r);
+		bool extract(double* r);
 	private:
 		std::vector<std::string> programfiles;
 

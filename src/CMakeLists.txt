@@ -57,6 +57,7 @@ add_executable(dflat
 	TreeWidthExtractor.cpp
 	FeatureExtractor.cpp
 	NumberOfRulesExtractor.cpp
+	AverageWidthExtractor.cpp
 	)
 
 target_link_libraries(dflat libsharp.a gringo clasp gmp gmpxx ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_TIMER_LIBRARY})

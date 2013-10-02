@@ -14,15 +14,7 @@
 		</instance>
 	</instances>
 	<features>
-		<feature name='tw'>
-			<size>2</size>
-			<min>3</min>
-			<max>10</max>
-		</feature>
-		<feature name='nor'>
-			<size>1</size>
-			<min>1</min>
-			<max>100</max>
-		</feature>
+		<feature name='tw' size='1' />
+		<feature name='aw' />
 	</features>
 </config>

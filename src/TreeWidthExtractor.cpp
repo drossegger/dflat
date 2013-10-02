@@ -3,7 +3,7 @@ TreeWidthExtractor::TreeWidthExtractor(std::string name, sharp::ExtendedHypertre
 	featurename=name;
 	TreeWidthExtractor::instance=e;
 }
-bool TreeWidthExtractor::extract(int* r){
+bool TreeWidthExtractor::extract(double* r){
 
 	*r=TreeWidthExtractor::instance->getTreeWidth();
 	//cout << "DecompositionWidth: "<< *r << endl;

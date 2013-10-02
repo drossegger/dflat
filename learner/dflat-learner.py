@@ -33,30 +33,20 @@ def extractFeatures(arg,features):
 			line.append(line[1])
 		else:
 			line[1]=float(line[1])
-			size=feature.find('size')
-			if size!=None:
-				size=float(size.text)
-				limitLo=int(line[1]/size)*size
-				limitHi=round(line[1]/size)*size
-				if(feature.find('max')!=None):
-					maxval=float(feature.find('max').text)
-				else:
-					maxval=1000000
-				if(feature.find('min')!=None):
-					minval=float(feature.find('min').text)
-				else:
-					minval=0
-				if line[1]<minval:
-					line[1]=0
-					line.append(minval)
-				elif line[1]>maxval:
-					line[1]=maxval
-					line.append(0)
-				else:
-					line[1]=limitLo
-					line.append(limitHi)
+			size=float(feature.get('size',1))
+			limitLo=int(line[1]/size)*size
+			limitHi=round(line[1]/size)*size
+			maxval=float(feature.get('max',1000000))
+			minval=float(feature.get('min',0))
+			if line[1]<minval:
+				line[1]=0
+				line.append(minval)
+			elif line[1]>maxval:
+				line[1]=maxval
+				line.append(0)
 			else:
-				line.append(line[1])
+				line[1]=limitLo
+				line.append(limitHi)
 	return lines
 
 def writeCSV(portfolios,features,performance):
@@ -125,7 +115,7 @@ def learn(root,numberseeds):
 				t=Timer('subprocess.call("%s",shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)' % ' '.join(arg),setup='import subprocess')
 				arg.pop(1)
 				arg.pop(1)
-				times.append(min(t.repeat(repeat=1,number=1)))
+				times.append(min(t.repeat(repeat=2,number=1)))
 			print features
 			print min(times)
 			print [x/min(times) for x in times]
@@ -136,7 +126,7 @@ def learn(root,numberseeds):
 tree=ET.parse('config.xml')
 if len(sys.argv)==2 :
 	if(sys.argv[1]=='--finalize'):
-		finalize(root.find('features'))
+		finalize(tree.getroot().find('features'))
 	else:
 		print 'Wrong command line arguments'
 		quit()

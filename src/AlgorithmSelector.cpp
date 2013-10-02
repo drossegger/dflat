@@ -3,7 +3,7 @@
 using namespace std;
 Algorithm::portfolio AlgorithmSelector::select(){
 	FeatureExtractor* fe=features.front();
-	int* r=new int(0);
+	double* r=new double(0);
 	
 	fe->extract(r);
 	float numbers[features.size()][PORTFOLIO_SIZE];
@@ -36,7 +36,7 @@ int AlgorithmSelector::findMax(float* f, int size){
 		}
 	return index;
 }
-vector<string> AlgorithmSelector::readPerformance(string spath,int feature){
+vector<string> AlgorithmSelector::readPerformance(string spath,double feature){
 	string line;
 	vector<string> cols;
 	boost::filesystem::path p(spath);

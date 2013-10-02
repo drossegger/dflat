@@ -34,6 +34,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 #include "EnumerationIterator.h"
 #include "AlgorithmSelector.h"
 #include "TreeWidthExtractor.h"
+#include "AverageWidthExtractor.h"
 #include "NumberOfRulesExtractor.h"
 namespace {
 	const int CONSISTENT = 10;
@@ -201,9 +202,10 @@ int main(int argc, char** argv)
 		programvector.push_back(inputString);
 		felist.push_back(new TreeWidthExtractor("tw",decomposition));
 		felist.push_back(new NumberOfRulesExtractor("nor",programvector));
+		felist.push_back(new AverageWidthExtractor("aw",decomposition));
 		if(onlyFeatureExtract){
 			cout << "begin features" << endl;
-			int r=0;
+			double r=0.0;
 			for(list<FeatureExtractor*>::iterator it=felist.begin();it!=felist.end();++it){
 				(*it)->extract(&r);	
 				cout << (*it)->getName() << ";" << r << endl;
