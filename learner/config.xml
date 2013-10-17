@@ -6,15 +6,14 @@
 	<portfolio>none</portfolio>
 	<instances>
 		<instance>
-			<join-program>/home/dino/workspace/projdbai/instances/asp_encodings-0.2/belief-revision/dynamic.lp</join-program>
-			<edge>pos</edge>
-			<edge>neg</edge>
+			<join-program>/home/dino/workspace/projdbai/instances/asp_encodings-0.2/3col/dynamic.lp</join-program>
+			<edge>edge</edge>
 			<multi-level/>
-			<input-file>/home/dino/workspace/projdbai/instances/belief-revision/instance3.lp</input-file>
+			<input-file>/home/dino/workspace/projdbai/instances/3col/30_0_57_1331341558.lp</input-file>
 		</instance>
 	</instances>
 	<features>
 		<feature name='tw' size='1' />
-		<feature name='aw' />
+		<feature name='nor' />
 	</features>
 </config>

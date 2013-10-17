@@ -58,6 +58,8 @@ add_executable(dflat
 	FeatureExtractor.cpp
 	NumberOfRulesExtractor.cpp
 	AverageWidthExtractor.cpp
+	JJDistExtractor.cpp
+	JNPExtractor.cpp
 	)
 
 target_link_libraries(dflat libsharp.a gringo clasp gmp gmpxx ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_TIMER_LIBRARY})

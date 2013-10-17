@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from timeit import Timer
 import xml.etree.ElementTree as ET
-import subprocess,re,os,sys
+import subprocess,re,os,sys,getopt
 
 def buildProgramString(instance):
 	arg=['-s','1','-p','counting']
@@ -49,7 +49,7 @@ def extractFeatures(arg,features):
 				line.append(limitHi)
 	return lines
 
-def writeCSV(portfolios,features,performance):
+def writeExtendedCSV(portfolios,features,performance):
 		for feature in features:
 			featurename=feature.pop(0)
 			if(os.path.exists(featurename+'.csv')):
@@ -68,8 +68,25 @@ def writeCSV(portfolios,features,performance):
 				f.write(';'.join(portfolios)+'\n')
 				f.write(';'.join([str(x) for x in feature+performance])+'\n')
 				f.close()
+			feature.insert(0,featurename)
 
-def finalize(features):
+def writeCSV(portfolios, features, performance):
+	firstline=''
+	featurepart=''
+	for feature in features:
+		firstline=firstline+feature[0]+';'+feature[0]+';'
+		featurepart=featurepart+str(feature[1])+';'+str(feature[2])+';'
+	if os.path.exists('learning.csv'):
+		f=open('learning.csv','a+')
+	else:
+		f=open('learning.csv','w')
+		portfolios.pop(0)
+		portfolios.pop(0)
+		f.write(firstline+';'.join(portfolios)+'\n')
+	f.write(featurepart+';'.join([str(x) for x in performance])+'\n')
+	f.close()
+	
+def finalizeExtendedOutput(features):
 	for xmlfeature in features.iter('feature'):
 		feature=xmlfeature.attrib.get('name')
 		if(os.path.exists(feature+'.csv')):
@@ -98,15 +115,46 @@ def finalize(features):
 			f.close()
 		else:
 			print 'Error, featurefile not found'
-			quit()
-def learn(root,numberseeds):
+			sys.exit(2)
+def finalize(features,extendedOutput=False):
+	if extendedOutput:
+		finalizeExtendedOutput(features)
+	firstline=''
+	finPerformance=[]
+	if os.path.exists('learning.csv'):
+		f=open('learning.csv','r')
+		lines=f.read().splitlines();
+		performance=[line.split(';') for line in lines]
+		firstline=performance.pop(0)
+		performance=[[float(val) for val in line] for line in performance]
+		nrfeatures=len(features)
+		indeces=map(list,set(map(tuple,[line[:nrfeatures*2] for line in performance])))
+		finPerformance=[]
+		for index in indeces:
+			indexentry=[line for line in performance if line[:nrfeatures*2]==index]	
+			portfolioperformances=[]
+			for colindex in range(2*nrfeatures, len(indexentry[0])):
+				col=[row[colindex] for row in indexentry]
+				portfolioperformances.append(sum(col)/len(col))
+			finPerformance.append(index+portfolioperformances)
+		f.close()
+		f=open('learning.csv','w')
+		f.write(';'.join(firstline)+'\n')
+		for line in finPerformance:
+			line=[str(val) for val in line]
+			f.write(';'.join(line)+'\n')
+		f.close()
+	else:
+		print 'Error, featurefile not found'
+		sys.exit(2)
+
+def learn(root,numberseeds,extendedOutput=False):
 	portfolios=['','']+[portfolio.text for portfolio in root.iter('portfolio')]
 	for instance in root.iter('instance'):
 		arg=[root.find('dflat').text]+buildProgramString(instance)
 		for seed in range(numberseeds):
 			times=[]
 			features=extractFeatures(arg,root.find('features'))
-			print features
 			for portfolio in root.iter('portfolio'):
 				arg[2]=''+str(seed)
 				arg.insert(1,portfolio.text)
@@ -119,28 +167,33 @@ def learn(root,numberseeds):
 			print features
 			print min(times)
 			print [x/min(times) for x in times]
+			if extendedOutput:
+				writeExtendedCSV(portfolios,features,[x/min(times) for x in times])
 			writeCSV(portfolios,features,[x/min(times) for x in times])
 
 
-
-tree=ET.parse('config.xml')
-if len(sys.argv)==2 :
-	if(sys.argv[1]=='--finalize'):
-		finalize(tree.getroot().find('features'))
+def main(argv):
+	tree = ET.parse('config.xml')
+	if argv==[]:
+		learn(tree.getroot(),1)
 	else:
-		print 'Wrong command line arguments'
-		quit()
-elif len(sys.argv)==3 :
-	if sys.argv[1]=="--seeds" :
-		learn(tree.getroot(),int(sys.argv[2]))
-	else:
-		print 'Wrong command line arguments'
-		quit()
-elif len(sys.argv)>3:
-	print 'Wrong command line arguments'
-	quit()
-else:
-	learn(tree.getroot(),1)
+		try:
+			opts,args = getopt.getopt(argv,'fs:e')
+		except getopt.GetOptError:
+			print 'dflat-learner.py <-f> <-s #seeds> <-e>'
+			sys.exit(2)
+		extendedOutput=False
+		for opt,arg in opts:
+			if opt == '-e':
+				extendedOutput=True
+		for opt,arg in opts:
+			if opt == '-f':
+				finalize(tree.getroot().find('features'),extendedOutput)
+			elif opt == '-s':
+				learn(tree.getroot(),int(arg),extendedOutput)
+			else:
+				learn(tree.getroot(),1,extendedOutput)
 
 
-
+if __name__ == "__main__":
+	   main(sys.argv[1:])

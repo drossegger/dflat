@@ -2,8 +2,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 using namespace std;
-NumberOfRulesExtractor::NumberOfRulesExtractor(string name,vector<string> files){
-	programfiles=files;
+NumberOfRulesExtractor::NumberOfRulesExtractor(string name, string files,set<string> hyperedgePredicateNames){
+	edges=hyperedgePredicateNames;
+	program=files;
 		featurename=name;
 }
 bool NumberOfRulesExtractor::extract(double* r){
@@ -12,14 +13,20 @@ bool NumberOfRulesExtractor::extract(double* r){
 	string fileString="";
 	char buffer[128];
 	string result = "";
+	string instance = "introduced(a).\nintroduced(b).\n";
 	vector<string> resultLines;
 	vector<string> resultsplitted;
+	for (set<string>::iterator it=edges.begin(); it!=edges.end(); ++it){
+		instance=instance+*it+"(a,b).\n";
+	}
+	//cout << instance<<endl;
 
 	ofstream myfile;
   myfile.open ("program.txt");
-  myfile << programfiles.at(1);
+	myfile << instance;
   myfile.close();
-	string cmd=gringoPath +" " + programfiles.at(0) + " program.txt | " + clasprePath + " --claspfolio 1";
+	string cmd=gringoPath +" " + program + " program.txt | " + clasprePath + " --claspfolio 1";
+	//cout << cmd << endl;
 	FILE* pipe = popen(cmd.c_str(), "r");
   if (!pipe) return false;
 	result = "";

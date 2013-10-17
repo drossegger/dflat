@@ -3,16 +3,17 @@
 
 #include "FeatureExtractor.h"
 #include <vector>
+#include <set>
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
 class NumberOfRulesExtractor:public FeatureExtractor{
 	public:
-		NumberOfRulesExtractor(std::string name, std::vector<std::string> files);
+		NumberOfRulesExtractor(std::string name, std::string files,std::set<std::string> hyperedgePredicateNames);
 		bool extract(double* r);
 	private:
-		std::vector<std::string> programfiles;
-
+		std::string program;
+		std::set<std::string> edges;
 		
 };
 #endif

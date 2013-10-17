@@ -34,7 +34,8 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 #include "EnumerationIterator.h"
 #include "AlgorithmSelector.h"
 #include "TreeWidthExtractor.h"
-#include "AverageWidthExtractor.h"
+#include "JNPExtractor.h"
+#include "JJDistExtractor.h"
 #include "NumberOfRulesExtractor.h"
 namespace {
 	const int CONSISTENT = 10;
@@ -196,13 +197,10 @@ int main(int argc, char** argv)
 
 		sharp::ExtendedHypertree* decomposition = problem.calculateHypertreeDecomposition();
 		std::list<FeatureExtractor*> felist;
-		vector<string> programvector;
-		cout << "Program: " << program<< endl;
-		programvector.push_back(program);
-		programvector.push_back(inputString);
-		felist.push_back(new TreeWidthExtractor("tw",decomposition));
-		felist.push_back(new NumberOfRulesExtractor("nor",programvector));
-		felist.push_back(new AverageWidthExtractor("aw",decomposition));
+		felist.push_back(new TreeWidthExtractor("tw",normalizationType == sharp::SemiNormalization?decomposition->normalize(sharp::SemiNormalization):decomposition->normalize()));
+		felist.push_back(new NumberOfRulesExtractor("nor",program,hyperedgePredicateNames));
+		felist.push_back(new JNPExtractor("jpct",sharp::SemiNormalization?decomposition->normalize(sharp::SemiNormalization):decomposition->normalize()));
+		felist.push_back(new JJDistExtractor("jjdist",sharp::SemiNormalization?decomposition->normalize(sharp::SemiNormalization):decomposition->normalize()));
 		if(onlyFeatureExtract){
 			cout << "begin features" << endl;
 			double r=0.0;
