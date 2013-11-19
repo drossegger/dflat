@@ -20,8 +20,10 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 %{
 	#include "../../src/parser/Driver.h"
-	#include "parser.h"
+	#include "parser.hpp"
 	#define yyterminate() return token::END
+	// Silence a Clang warning about yyinput() being unused
+	#define YY_NO_INPUT
 %}
 
 %option noyywrap nounput batch
@@ -80,6 +82,7 @@ void Driver::scan_begin()
 
 void Driver::scan_end()
 {
+	yylex_destroy();
 }
 
 } // namespace parser

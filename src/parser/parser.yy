@@ -26,13 +26,15 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 %code requires
 {
 	#include <sstream>
+	class Hypergraph;
 	namespace parser {
 		class Driver;
-    	class Terms;
+		class Terms;
 	}
 }
 
 %parse-param { parser::Driver& driver }
+%parse-param { Hypergraph& hypergraph }
 %lex-param   { parser::Driver& driver }
 %locations
 %error-verbose
@@ -40,7 +42,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 %code
 {
 	#include "../../src/parser/Driver.h"
-    #include "../../src/parser/Terms.h"
+	#include "../../src/parser/Terms.h"
 }
 
 %union
@@ -63,16 +65,16 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 %start facts;
 
 simpleterm: "identifier" { $$ = $1; }
-		  | "number"     { $$ = $1; }
-		  | "qstring"    { $$ = $1; }
-		  ;
+          | "number"     { $$ = $1; }
+          | "qstring"    { $$ = $1; }
+          ;
 
 term: simpleterm { $$ = $1; }
     | function   { $$ = $1; }
     ;
 
 terms: term           { $$ = new parser::Terms($1); }
-	 | terms ',' term {
+     | terms ',' term {
                         $1->push_back($3);
                         $$ = $1;
                       }
@@ -88,18 +90,18 @@ function: "identifier" '(' terms ')' {
         ;
 
 fact: "identifier" '.'               {
-                                       driver.reportFact(*$1);
+                                       driver.processFact(hypergraph, *$1);
                                        delete $1;
                                      }
     | "identifier" '(' terms ')' '.' {
-                                       driver.reportFact(*$1, $3);
+                                       driver.processFact(hypergraph, *$1, $3);
                                        delete $1;
                                        delete $3;
                                      }
     ;
 
 facts: /* empty */
-	 | facts fact
+     | facts fact
      ;
 
 %%

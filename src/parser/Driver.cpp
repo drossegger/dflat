@@ -19,13 +19,16 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <stdexcept>
+
 #include "Driver.h"
-#include "parser.h"
+#include "Terms.h"
+#include "../Hypergraph.h"
 
 namespace parser {
 
-Driver::Driver(Problem& problem, const std::string& input)
-	: problem(problem), input(input)
+Driver::Driver(const std::string& input, const Predicates& hyperedgePredicateNames)
+	: input(input)
+	, hyperedgePredicateNames(hyperedgePredicateNames)
 {
 }
 
@@ -33,14 +36,16 @@ Driver::~Driver()
 {
 }
 
-void Driver::parse()
+Hypergraph Driver::parse()
 {
+	Hypergraph hypergraph;
 	scan_begin();
-	::yy::Parser parser(*this);
+	::yy::Parser parser(*this, hypergraph);
 	int res = parser.parse();
 	scan_end();
 	if(res != 0)
 		throw std::runtime_error("Parse error");
+	return hypergraph;
 }
 
 void Driver::error(const yy::location& l, const std::string& m)
@@ -50,9 +55,20 @@ void Driver::error(const yy::location& l, const std::string& m)
 	throw std::runtime_error(ss.str());
 }
 
-void Driver::reportFact(const std::string& predicate, const Terms* arguments)
+void Driver::processFact(Hypergraph& hypergraph, const std::string& predicate, const Terms* arguments)
 {
-	problem.parsedFact(predicate, arguments);
+	if(hyperedgePredicateNames.find(predicate) != hyperedgePredicateNames.end()) {
+		Hypergraph::Edge hyperedge;
+
+		if(arguments) {
+			for(const auto* term : arguments->getTerms()) {
+				hypergraph.addVertex(*term);
+				hyperedge.insert(*term);
+			}
+		}
+
+		hypergraph.addEdge(hyperedge);
+	}
 }
 
 } // namespace parser

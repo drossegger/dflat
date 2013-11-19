@@ -20,8 +20,9 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "parser.h"
-#include "../Problem.h"
+#include <set>
+
+#include "parser.hpp"
 
 #define YY_DECL                                \
  yy::Parser::token_type                        \
@@ -35,17 +36,19 @@ namespace parser {
 class Driver
 {
 public:
-	Driver(Problem& problem, const std::string& input);
+	typedef std::set<std::string> Predicates;
+
+	Driver(const std::string& input, const Predicates& hyperedgePredicateNames);
 	~Driver();
 	void scan_begin();
 	void scan_end();
-	void parse();
+	Hypergraph parse();
 	void error(const yy::location& l, const std::string& m);
-	void reportFact(const std::string& predicate, const Terms* arguments = 0);
+	void processFact(Hypergraph& hypergraph, const std::string& predicate, const Terms* arguments = 0);
 
 private:
-	Problem& problem;
-	std::string input;
+	const std::string& input;
+	const Predicates& hyperedgePredicateNames;
 };
 
 } // namespace parser

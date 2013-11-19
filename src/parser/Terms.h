@@ -27,13 +27,14 @@ namespace parser {
 class Terms
 {
 public:
-    Terms(std::string* term);
-    ~Terms();
-    void push_back(std::string* term);
-	const std::vector<std::string*>& getTerms() const;
-    friend std::ostream& operator<<(std::ostream& stream, const Terms& terms);
+	typedef std::vector<std::string*> List;
+	Terms(std::string* term);
+	~Terms();
+	void push_back(std::string* term);
+	const List& getTerms() const;
+	friend std::ostream& operator<<(std::ostream& stream, const Terms& terms);
 private:
-    std::vector<std::string*> terms;
+	List terms;
 };
 
 } // namespace parser
