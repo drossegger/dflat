@@ -13,7 +13,10 @@ class ConfigParser:
 		self.getPortfolios() 
 		self.getDFLATPath() 
 		self.getInstances() 
+		self.getGringoPath()
 
+	def getGringoPath(self):
+		self.gringo=self.root.find('gringo').text
 	def getPortfolios(self): 
 		self.portfolios = [portfolio.text for portfolio in self.root.iter('portfolio')] 
 

@@ -22,7 +22,8 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "options/OptionHandler.h"
 #include "options/Choice.h"
-
+#define PORTFOLIO_SIZE 4
+enum {NONE,JUMPY,FRUMPY,CRAFTY};
 class Decomposer;
 class SolverFactory;
 class Debugger;
@@ -52,6 +53,7 @@ public:
 
 	bool isPruningDisabled() const;
 
+	//Availabla Portfolios
 private:
 	static const std::string MODULE_SECTION;
 

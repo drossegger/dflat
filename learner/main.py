@@ -1,12 +1,15 @@
 import sys
-from test.FeatureExtractor import FeatureExtractor
+from test.FeatureExtractors import GringoFeatureExtractor
 from test.RunTest import RunTest 
 from output.TextWriter import *
 from misc.ConfigParser import *
 
 c=ConfigParser()
-f=FeatureExtractor(c.dflat, c.instances)
+f=GringoFeatureExtractor(c.gringo, c.instances)
 instances=f.extract()
+for instance in instances:
+	 for feature in instance.features:
+		 print feature
 r=RunTest(c.dflat,instances,c.portfolios)
 instances=r.run()
 lbw=LBWriter('learningbase.csv')

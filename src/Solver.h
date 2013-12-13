@@ -26,10 +26,18 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 class Decomposition;
 class Application;
+typedef struct Param {
+		std::string name;
+		int value;
+	} Param;
 
 class Solver
 {
-public:
+	public:
+	//Set extra parameters
+	void setExtraParam(std::string param, int value);
+	
+	
 	// Construct a solver responsible for the root of the given decomposition
 	Solver(const Decomposition& decomposition, const Application& app);
 
@@ -43,6 +51,7 @@ public:
 	//virtual ItemTreePtr nextFeasibleCandidate(int bestSoFar) = 0;
 
 protected:
+	std::vector<Param> extraParams;
 	const Decomposition& decomposition;
 	const Application& app;
 };

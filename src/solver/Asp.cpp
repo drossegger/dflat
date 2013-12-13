@@ -20,19 +20,8 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <sstream>
 #include <gringo/streams.h>
-#include <clasp/clasp_facade.h>
 
 #include "Asp.h"
-#include "../Application.h"
-#include "../ItemTree.h"
-#include "../Decomposition.h"
-#include "../Debugger.h"
-#include "asp/tables/GringoOutputProcessor.h"
-#include "asp/tables/ClaspCallback.h"
-#include "asp/trees/GringoOutputProcessor.h"
-#include "asp/trees/ClaspCallback.h"
-#include "asp/ClaspInputReader.h"
-
 using namespace solver::asp;
 using ChildItemTrees = GringoOutputProcessor::ChildItemTrees;
 
@@ -111,6 +100,7 @@ ItemTreePtr Asp::compute()
 	ClaspInputReader inputReader(inputStreams, *outputProcessor);
 	std::unique_ptr<ClaspCallback> cb(newClaspCallback(tableMode, *outputProcessor, childItemTrees, app.isPruningDisabled() == false, app.getDebugger()));
 	Clasp::ClaspConfig config;
+	getClaspConfig(config);
 	config.enumerate.numModels = 0;
 	Clasp::ClaspFacade clasp;
 	clasp.solve(inputReader, config, cb.get());
@@ -122,6 +112,93 @@ ItemTreePtr Asp::compute()
 	return result;
 }
 
+void Asp::getClaspConfig(Clasp::ClaspConfig & config){
+	std::vector<Param> params=extraParams;
+	Param p;
+	while (!params.empty()){
+		p=params.back();
+		params.pop_back();
+		if(p.name=="portfolio"){
+			switch(p.value){
+				case JUMPY:		
+					jumpyConfig(config);
+					break;
+				case FRUMPY:
+					frumpyConfig(config);
+					break;
+				case CRAFTY:
+					craftyConfig(config);
+					break;
+				default:
+					;
+			}
+
+		}
+	}
+}
+void Asp::jumpyConfig(Clasp::ClaspConfig & config)
+{
+		config.master()->solver->strategies().heuId     = Clasp::ClaspConfig::heu_vsids; //heuristic
+		config.master()->solver->strategies().updateLbd = 3; //update-lbd
+		config.master()->solver->strategies().strRecursive = true; //strengthen
+		config.master()->solver->strategies().otfs = 2; //otfs
+		config.master()->solver->strategies().saveProgress = 70; //save-progress
+
+		config.master()->params.reduce.strategy.fReduce = 75; //deletion 2
+		config.master()->params.reduce.strategy.score   = Clasp::ReduceStrategy::reduce_linear; //del-algo
+		config.master()->params.reduce.strategy.algo    = 2; //del-algo
+		config.master()->params.reduce.strategy.glue    = 2; //del-glue
+
+		config.master()->params.reduce.initRange.lo     = 1000; //del-init-r 1
+		config.master()->params.reduce.initRange.hi     = 21000; //del-init-r 2
+		config.master()->params.reduce.fGrow			      = 1.1; //del-grow
+		config.master()->params.reduce.fMax 			      = 25; //del-grow
+		config.master()->params.reduce.growSched	      = Clasp::ScheduleStrategy::geom(100,1.5); //del-grow
+		config.master()->params.reduce.cflSched	        = Clasp::ScheduleStrategy::geom(10000,1.1); //del-cfl
+		config.master()->params.restart.sched           = Clasp::ScheduleStrategy::luby(100); //restarts
+ 
+}
+void Asp::frumpyConfig(Clasp::ClaspConfig & config)
+{
+		config.master()->solver->strategies().heuId     = Clasp::ClaspConfig::heu_berkmin; //heuristic
+		config.master()->solver->strategies().strRecursive = false; //strengthen
+		config.master()->solver->strategies().saveProgress = 180; //save-progress
+		config.master()->solver->strategies().loopRep=Clasp::DefaultUnfoundedCheck::common_reason;//loops
+		config.master()->solver->strategies().compress=250;//contractions
+
+		config.master()->params.reduce.growSched				=	Clasp::ScheduleStrategy::none(); //deletion 1
+		config.master()->params.reduce.fMax=0;
+		config.master()->params.reduce.strategy.fReduce = 75; //deletion 2
+		config.master()->params.reduce.strategy.score   = Clasp::ReduceStrategy::reduce_linear; //del-algo
+		config.master()->params.reduce.initRange.lo     = 200; //del-init-r 1
+		config.master()->params.reduce.initRange.hi     = 40200; //del-init-r 2
+		config.master()->params.reduce.fGrow			      = 1.1; //del-grow
+		config.master()->params.restart.sched           = Clasp::ScheduleStrategy::geom(100,1.5); //restarts
+ 
+}
+void Asp::craftyConfig(Clasp::ClaspConfig & config)
+{
+		config.master()->solver->strategies().heuId     = Clasp::ClaspConfig::heu_vsids; //heuristic
+		config.master()->solver->strategies().strRecursive = false; //strengthen
+		config.master()->solver->strategies().saveProgress = 180; //save-progress
+		config.master()->solver->strategies().loopRep=Clasp::DefaultUnfoundedCheck::common_reason;//loops
+		config.master()->solver->strategies().compress=250;//contractions
+
+		config.master()->params.reduce.strategy.glue    = 2; //del-glue
+		config.master()->solver->strategies().otfs = 2; //otfs
+		config.master()->solver->strategies().compress = 250; //contraction
+		config.master()->solver->strategies().reverseArcs = 1; //reverse-arcs
+		config.master()->params.reduce.strategy.fReduce = 75; //deletion 2
+		config.master()->params.reduce.fMax 			      = 20; //del-grow
+		config.master()->params.reduce.fInit=(float)0.1;
+		config.master()->params.reduce.strategy.score   = Clasp::ReduceStrategy::reduce_linear; //del-algo
+		config.master()->params.reduce.initRange.lo     = 1000; //del-init-r 1
+		config.master()->params.reduce.initRange.hi     = 10000; //del-init-r 2
+		config.master()->params.reduce.fGrow			      = 1.1; //del-grow
+		config.master()->params.restart.sched           = Clasp::ScheduleStrategy::geom(128,1.5); //restarts
+		config.master()->params.restart.counterRestart = 3;
+		config.master()->params.reduce.cflSched	        = Clasp::ScheduleStrategy::arith(1000,1000); //del-cfl
+}
 void Asp::declareDecomposition(const Decomposition& decomposition, std::ostream& out)
 {
 	out << "% Decomposition facts" << std::endl;

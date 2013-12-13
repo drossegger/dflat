@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(dflat)
 set(USE_STATIC_LIBS "${USE_STATIC_LIBS}" CACHE BOOL "Link statically")
 
-add_definitions("-Wall -pedantic -std=c++11 -DDISABLE_MULTI_THREADING")
+add_definitions("-Wall -pedantic -g -std=c++11 -DDISABLE_MULTI_THREADING")
 
 set(CMAKE_CXX_FLAGS_GPROF "-O3 -g -pg")
 set(CMAKE_LINKER_FLAGS_GPROF "-pg")

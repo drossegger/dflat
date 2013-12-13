@@ -40,6 +40,10 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 #include "debugger/HumanReadable.h"
 #include "debugger/MachineReadable.h"
 
+/*#include "extractor/TreeWidthExtractor.h"
+#include "extractor/JNPExtractor.h"
+#include "extractor/JJDistExtractor.h"
+#include "extractor/NumberOfRulesExtractor.h"*/
 #include "parser/Driver.h"
 
 const std::string Application::MODULE_SECTION = "Module selection";
@@ -92,6 +96,12 @@ int Application::run(int argc, char** argv)
 	options::SingleValueOption optSeed("seed", "n", "Initialize random number generator with seed <n>");
 	opts.addOption(optSeed);
 
+	options::Option optExtFeatures("ext-feat","Terminate after extracting the features of the input");
+	opts.addOption(optExtFeatures);
+	
+	options::SingleValueOption optPortfolio("portfolio","portfolio","Use portfolio <portfolio>");
+	opts.addOption(optPortfolio);
+
 	// Set up module selection options
 	opts.addOption(optDecomposer, MODULE_SECTION);
 	decomposer::Dummy dummyDecomposer(*this);
@@ -106,6 +116,7 @@ int Application::run(int argc, char** argv)
 	debugger::HumanReadable humanReadableDebugger(*this);
 	debugger::MachineReadable machineReadableDebugger(*this);
 
+	//opts.addOption(optLearn, MODULE_SECTION);
 	// Parse command line
 	try {
 		opts.parse(argc, argv);
@@ -137,14 +148,38 @@ int Application::run(int argc, char** argv)
 	inputStringStream << std::cin.rdbuf();
 	inputString = inputStringStream.str();
 
+	
 	// Parse instance
 	Hypergraph instance = parser::Driver(inputString, edgePredicates).parse();
 
 	// Decompose instance
 	DecompositionPtr decomposition = decomposer->decompose(instance);
+	
+	/*if (optExtFeatures.isUsed()){
+		std::list<FeatureExtractor*> felist;
+		felist.push_back(new TreeWidthExtractor("tw",decomposition->normalize()));
+		felist.push_back(new NumberOfRulesExtractor("nor",program,hyperedgePredicateNames));
+		felist.push_back(new JNPExtractor("jpct",decomposition->normalize()));
+		felist.push_back(new JJDistExtractor("jjdist",decomposition->normalize()));
+		cout << "begin features" << endl;
+		double r=0.0;
+		for(list<FeatureExtractor*>::iterator it=felist.begin();it!=felist.end();++it){
+			(*it)->extract(&r);	
+			cout << (*it)->getName() << ";" << r << endl;
+		}
+		cout << "end features" << endl;
+		return 0;
+	}*/
 
-	// Solve
-	ItemTreePtr rootItree = decomposition->getSolver().compute();
+	//Solve with Portfolio
+	Solver* mysolver=&(decomposition->getSolver());
+	if (optPortfolio.isUsed()){
+		std::string value=optPortfolio.getValue();
+		if(value=="frumpy")mysolver->setExtraParam("portfolio",FRUMPY);
+		else if(value=="jumpy")mysolver->setExtraParam("portfolio",JUMPY);
+		else if(value=="crafty")mysolver->setExtraParam("portfolio",CRAFTY);
+	}
+	ItemTreePtr rootItree = mysolver->compute();
 
 	std::cout << "Solutions:" << std::endl;
 	if(rootItree)

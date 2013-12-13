@@ -29,3 +29,8 @@ Solver::Solver(const Decomposition& decomposition, const Application& app)
 	, app(app)
 {
 }
+	void Solver::setExtraParam(std::string param, int value){
+		Param p={param,value};
+		extraParams.push_back(p);
+	}
+

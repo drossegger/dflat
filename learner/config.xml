@@ -1,5 +1,6 @@
 <config>
 	<dflat>/home/dino/workspace/dflat/build/release/dflat</dflat>
+	<gringo>/home/dino/workspace/dflat/tools/bin/gringo</gringo>
 	<portfolio>jumpy</portfolio>
 	<portfolio>frumpy</portfolio>
 	<portfolio>crafty</portfolio>

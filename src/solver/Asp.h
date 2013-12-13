@@ -20,7 +20,18 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include <clasp/clasp_facade.h>
 #include "../Solver.h"
+#include "../Application.h"
+#include "../ItemTree.h"
+#include "../Decomposition.h"
+#include "../Debugger.h"
+#include "asp/tables/GringoOutputProcessor.h"
+#include "asp/tables/ClaspCallback.h"
+#include "asp/trees/GringoOutputProcessor.h"
+#include "asp/trees/ClaspCallback.h"
+#include "asp/ClaspInputReader.h"
+
 
 namespace solver {
 
@@ -37,6 +48,12 @@ public:
 protected:
 	std::string encodingFile;
 	bool tableMode;
+private:
+	void getClaspConfig(Clasp::ClaspConfig & config);
+	void frumpyConfig(Clasp::ClaspConfig & config);
+	void jumpyConfig(Clasp::ClaspConfig & config);
+	void craftyConfig(Clasp::ClaspConfig & config);
 };
+
 
 } // namespace solver
