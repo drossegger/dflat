@@ -1,4 +1,4 @@
-/*
+/*{{{
 Copyright 2012-2013, Bernhard Bliem
 WWW: <http://dbai.tuwien.ac.at/research/project/dflat/>.
 
@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+//}}}
 #include <cassert>
 #include <memory>
 
@@ -164,20 +164,12 @@ void ItemTreeNode::merge(ItemTreeNode&& other)
 {
 	assert(items == other.items);
 	assert(auxItems == other.auxItems);
+	assert(cost == other.cost);
+	assert(currentCost == other.currentCost);
 
-	if(other.cost < cost) {
-		// Throw away this node's data and retain the other one's
-		extensionPointers.swap(other.extensionPointers);
-		count = other.count;
-		cost = other.cost;
-		currentCost = other.currentCost;
-	}
-	else if(other.cost == cost) {
-		assert(other.currentCost == currentCost);
-		// Merge other node's data into this
-		extensionPointers.insert(extensionPointers.end(), other.extensionPointers.begin(), other.extensionPointers.end());
-		count += other.count;
-	}
+	// Merge other node's data into this
+	extensionPointers.insert(extensionPointers.end(), other.extensionPointers.begin(), other.extensionPointers.end());
+	count += other.count;
 }
 
 std::ostream& operator<<(std::ostream& os, const ItemTreeNode& node)

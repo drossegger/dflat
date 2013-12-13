@@ -1,4 +1,4 @@
-/*
+/*{{{
 Copyright 2012-2013, Bernhard Bliem
 WWW: <http://dbai.tuwien.ac.at/research/project/dflat/>.
 
@@ -19,7 +19,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
-
+//}}}
 #include <memory>
 
 #include "../../../DirectedAcyclicGraph.h"
@@ -48,7 +48,12 @@ public:
 	// *begin will be a child of *this.
 	void addBranch(Branch::iterator begin, Branch::iterator end);
 
+	// This propagates acceptance statuses from the leaves toward this node and prunes in the course of this if children are found to be rejecting. If this configuration can be determined to be accepting or rejecting, returns ACCEPT or REJECT, respectively; otherwise returns UNDEFINED.
+	ItemTreeNode::Type prune();
+
 	// Merges sibling subtrees with equal item sets. Moves each node in this tree to the resulting item tree.
+	// Also propagates costs from leaves to root.
+	// Do not call this before prune().
 	ItemTreePtr compress();
 };
 

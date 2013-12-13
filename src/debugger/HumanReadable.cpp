@@ -1,4 +1,4 @@
-/*
+/*{{{
 Copyright 2012-2013, Bernhard Bliem
 WWW: <http://dbai.tuwien.ac.at/research/project/dflat/>.
 
@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+//}}}
 #include <iostream>
 
 #include "HumanReadable.h"
@@ -26,9 +26,18 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace debugger {
 
+const std::string HumanReadable::OPTION_SECTION = "Human-readable debugging output";
+
 HumanReadable::HumanReadable(Application& app, bool newDefault)
 	: Debugger(app, "human", "Human-readable debugging output", newDefault)
+	, optPrintSolverEvents("print-solver-events", "Print events that occurred during solving")
+	, optPrintSolverInvocationInput("print-solver-input", "Print solver invocation input")
 {
+	optPrintSolverEvents.addCondition(selected);
+	app.getOptionHandler().addOption(optPrintSolverEvents, OPTION_SECTION);
+
+	optPrintSolverInvocationInput.addCondition(selected);
+	app.getOptionHandler().addOption(optPrintSolverInvocationInput, OPTION_SECTION);
 }
 
 void HumanReadable::decomposerResult(const Decomposition& result) const
@@ -38,7 +47,9 @@ void HumanReadable::decomposerResult(const Decomposition& result) const
 
 void HumanReadable::solverInvocationInput(const DecompositionNode& decompositionNode, const std::string& input) const
 {
-	std::cout << "Input for solver at decomposition node " << decompositionNode.getGlobalId() << ':' << std::endl << input << std::endl;
+	if(optPrintSolverInvocationInput.isUsed()) {
+		std::cout << "Input for solver at decomposition node " << decompositionNode.getGlobalId() << ':' << std::endl << input << std::endl;
+	}
 }
 
 void HumanReadable::solverInvocationResult(const DecompositionNode& decompositionNode, const ItemTree* result) const
@@ -53,7 +64,7 @@ void HumanReadable::solverInvocationResult(const DecompositionNode& decompositio
 
 bool HumanReadable::listensForSolverEvents() const
 {
-	return true;
+	return optPrintSolverEvents.isUsed();
 }
 
 void HumanReadable::solverEvent(const std::string& msg) const

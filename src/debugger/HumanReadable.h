@@ -1,4 +1,4 @@
-/*
+/*{{{
 Copyright 2012-2013, Bernhard Bliem
 WWW: <http://dbai.tuwien.ac.at/research/project/dflat/>.
 
@@ -19,8 +19,9 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
-
+//}}}
 #include "../Debugger.h"
+#include "../options/Option.h"
 
 namespace debugger {
 
@@ -34,6 +35,12 @@ public:
 	virtual void solverInvocationResult(const DecompositionNode& decompositionNode, const ItemTree* result) const;
 	virtual bool listensForSolverEvents() const;
 	virtual void solverEvent(const std::string& msg) const;
+
+private:
+	static const std::string OPTION_SECTION;
+
+	options::Option optPrintSolverEvents;
+	options::Option optPrintSolverInvocationInput;
 };
 
 } // namespace debugger

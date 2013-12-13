@@ -1,4 +1,4 @@
-/*
+/*{{{
 Copyright 2012-2013, Bernhard Bliem
 WWW: <http://dbai.tuwien.ac.at/research/project/dflat/>.
 
@@ -17,23 +17,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+//}}}
 #include "ClaspCallback.h"
 #include "../../Debugger.h"
 
 namespace solver { namespace asp {
 
-ClaspCallback::ClaspCallback(const ChildItemTrees& childItemTrees, bool prune, const Debugger& debugger)
+ClaspCallback::ClaspCallback(const ChildItemTrees& childItemTrees, const Debugger& debugger)
 	: childItemTrees(childItemTrees)
 	, debugger(debugger)
-	, prune(prune)
 {
 }
 
 ItemTreePtr ClaspCallback::finalize()
 {
-	if(prune && itemTree && itemTree->prune() == ItemTreeNode::Type::REJECT)
-		itemTree.reset();
 	if(itemTree)
 		itemTree->finalize();
 	return std::move(itemTree);

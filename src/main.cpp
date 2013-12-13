@@ -1,5 +1,6 @@
-
 /*
+=======
+>>>>>>> 6150fdc5cabcfcfc975974f26ac8118c95036ff5
 Copyright 2012-2013, Bernhard Bliem
 WWW: <http://dbai.tuwien.ac.at/research/project/dflat/>.
 
@@ -18,7 +19,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #include <iostream>
 
 #include "Application.h"

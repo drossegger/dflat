@@ -1,4 +1,4 @@
-/*
+/*{{{
 Copyright 2012-2013, Bernhard Bliem
 WWW: <http://dbai.tuwien.ac.at/research/project/dflat/>.
 
@@ -19,7 +19,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
-
+//}}}
 #include <ostream>
 #include <vector>
 #include <algorithm>
@@ -56,6 +56,18 @@ public:
 		for(auto& child : children)
 			std::replace(child->parents.begin(), child->parents.end(), &other, this);
 	}
+
+	DirectedAcyclicGraph& operator=(DirectedAcyclicGraph&& other)
+	{
+		assert(this != &other);
+		node = std::move(other.node);
+		children = std::move(other.children);
+//		parents = std::move(other.parents); // XXX does this make sense?
+		for(auto& child : children)
+			std::replace(child->parents.begin(), child->parents.end(), &other, this);
+		return *this;
+	}
+
 
 	DirectedAcyclicGraph(const DirectedAcyclicGraph&) = delete;
 
