@@ -43,11 +43,8 @@ public:
 	// Returns true if the node is a join node, i.e., has at least two children and all children have equal bags
 	bool isJoinNode() const;
 
-	void setTDWidth(int tdwidth);
-	int getTDWidth();
-
-	void setSize(int size);
-	int getSize();
+	// Traverses the decomposition and returns its width
+	int getWidth() const;
 protected:
 	const SolverFactory& solverFactory;
 	std::unique_ptr<Solver> solver;

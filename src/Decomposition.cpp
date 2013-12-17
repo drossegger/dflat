@@ -40,24 +40,12 @@ bool Decomposition::isJoinNode() const
 	return children.size() > 1 && std::all_of(children.begin(), children.end(), [&](const ChildPtr& child) {
 			return child->getRoot().getBag() == node.getBag();
 	});
-
-
-
 }
 
-void Decomposition::setTDWidth(int tdwidth){
-	this->tdwidth=tdwidth;
+int Decomposition::getWidth() const
+{
+	int width = node.getBag().size() - 1;
+	for(const auto& child : children)
+		width = std::max(child->getWidth(), width);
+	return width;
 }
-
-int Decomposition::getTDWidth(){
-	return this->tdwidth;
-}
-
-void Decomposition::setSize(int size){
-	this->size=size;
-}
-
-int Decomposition::getSize(){
-	return this->size;
-}
-
