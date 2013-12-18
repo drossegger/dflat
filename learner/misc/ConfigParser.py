@@ -37,14 +37,11 @@ class ConfigParser:
 			mlvl=xmlInstance.find('multi-level')
 			if mlvl != None:
 				instance.multilevel=True
-			exch=xmlInstance.find('exchange-program')
-			if exch != None:
-				instance.exchprogram=exch.text
-			joinprogram=xmlInstance.find('join-program').text
-			if joinprogram==None:
+			program=xmlInstance.find('program').text
+			if program==None:
 				print('ERROR in config.xml: Missing join-program in instance')
 				sys.exit(1)
-			instance.joinprogram=joinprogram 
+			instance.program=program 
 			inputfile=xmlInstance.find('input-file').text 
 			if inputfile==None: 
 				print('ERROR in config.xml: Missing input-file in instance')

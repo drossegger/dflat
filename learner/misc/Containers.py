@@ -1,6 +1,5 @@
 class Instance:
-	joinprogram=''
-	exchprogram=''
+	program=''
 	multilevel=False
 	inputfile=''
 	edges=[]

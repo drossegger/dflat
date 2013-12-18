@@ -7,10 +7,11 @@
 	<portfolio>none</portfolio>
 	<instances>
 		<instance>
-			<join-program>/home/dino/workspace/projdbai/instances/asp_encodings-0.2/3col/dynamic.lp</join-program>
-			<edge>edge</edge>
-			<multi-level/>
-			<input-file>/home/dino/workspace/projdbai/instances/3col/30_0_57_1331341558.lp</input-file>
+			<seed>1</seed>
+			<program>/home/dino/workspace/dflat/applications/sat/dynamic.lp</program>
+			<edge>pos</edge>
+			<edge>neg</edge>
+			<input-file>/home/dino/workspace/dflat/learning-instances/sat_20_10.lp</input-file>
 		</instance>
 	</instances>
 	<features>

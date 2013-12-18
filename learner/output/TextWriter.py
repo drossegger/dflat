@@ -11,7 +11,7 @@ class LBWriter(TextWriter):
 	def write(self,instances):
 		f=open(self.outputfile,'a+')
 		for instance in instances:
-			f.write(instance.joinprogram+';'+instance.inputfile+';')
+			f.write(instance.program+';'+instance.inputfile+';')
 			myfeatures=[str(x) for x in instance.features]
 			myruntimes=[str(x) for x in instance.runtimes]
 			f.write(','.join(myfeatures)+';'+','.join(myruntimes)+'\n')

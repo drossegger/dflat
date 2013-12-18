@@ -3,6 +3,7 @@ from test.FeatureExtractors import GringoFeatureExtractor
 from test.RunTest import RunTest 
 from output.TextWriter import *
 from misc.ConfigParser import *
+from misc.util import buildProgramString
 
 c=ConfigParser()
 f=GringoFeatureExtractor(c.gringo, c.instances)
@@ -17,6 +18,7 @@ if lbw.write(instances)==False:
 	print "ERROR writing File"
 	sys.exit(1)
 
+#print buildProgramString(c.dflat,instance,' --portfolio none')
 for instance in instances:
 	print instance.features
 	print instance.runtimes
