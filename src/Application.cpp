@@ -25,6 +25,10 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 #include "Application.h"
 #include "Decomposition.h"
 
+#include "extractors/FeatureExtractor.h"
+#include "extractors/TreeWidthExtractor.h"
+#include "extractors/JJDistExtractor.h"
+
 #include "options/MultiValueOption.h"
 #include "options/SingleValueOption.h"
 #include "options/OptionHandler.h"
@@ -155,21 +159,24 @@ int Application::run(int argc, char** argv)
 	// Decompose instance
 	DecompositionPtr decomposition = decomposer->decompose(instance);
 	
-	/*if (optExtFeatures.isUsed()){
-		std::list<FeatureExtractor*> felist;
-		felist.push_back(new TreeWidthExtractor("tw",decomposition->normalize()));
-		felist.push_back(new NumberOfRulesExtractor("nor",program,hyperedgePredicateNames));
-		felist.push_back(new JNPExtractor("jpct",decomposition->normalize()));
-		felist.push_back(new JJDistExtractor("jjdist",decomposition->normalize()));
-		cout << "begin features" << endl;
-		double r=0.0;
-		for(list<FeatureExtractor*>::iterator it=felist.begin();it!=felist.end();++it){
+	if (optExtFeatures.isUsed()){
+		//std::list<FeatureExtractor*> felist;
+		//felist.push_back(new TreeWidthExtractor("tw",treeDecomposer.extHypertree->normalize()));
+		//felist.push_back(new NumberOfRulesExtractor("nor",program,hyperedgePredicateNames));
+		//felist.push_back(new JJDistExtractor("jjdist",treeDecomposer.extHypertree->normalize()));
+		//cout << "begin features" << endl;
+		//double r=0.0;
+		/*for(list<FeatureExtractor*>::iterator it=felist.begin();it!=felist.end();++it){
 			(*it)->extract(&r);	
 			cout << (*it)->getName() << ";" << r << endl;
 		}
 		cout << "end features" << endl;
-		return 0;
-	}*/
+		cout << "begin features" << endl;
+		cout << "dw;"<< double(treeDecomposer.decompwidth) << endl;
+		cout << "jjdist;" << double(treeDecomposer.jjdist) << endl;
+		cout << "end features" << endl;
+		return 0;*/
+	}
 
 	//Solve with Portfolio
 	Solver* mysolver=&(decomposition->getSolver());

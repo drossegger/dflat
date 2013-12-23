@@ -14,6 +14,7 @@ class ConfigParser:
 		self.getDFLATPath() 
 		self.getInstances() 
 		self.getGringoPath()
+	
 
 	def getGringoPath(self):
 		self.gringo=self.root.find('gringo').text
@@ -47,6 +48,19 @@ class ConfigParser:
 				print('ERROR in config.xml: Missing input-file in instance')
 				sys.exit(1)
 			instance.inputfile=inputfile
+			normalization=xmlInstance.find('normalization')
+			if normalization==None:
+				instance.normalization='none'
+			else:
+				instance.normalization=normalization.text
+			defjoin=xmlInstance.find('default-join')
+			if defjoin==None:
+				instance.defjoin=False
+			else:
+				instance.defjoin=True
+			heuristic=xmlInstance.find('elimination')
+			if heuristic!=None:
+				instance.heuristic=heuristic
 			self.instances.append(instance)
 	
 

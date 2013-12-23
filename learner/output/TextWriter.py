@@ -11,10 +11,12 @@ class LBWriter(TextWriter):
 	def write(self,instances):
 		f=open(self.outputfile,'a+')
 		for instance in instances:
+			print instance.runtimes
 			f.write(instance.program+';'+instance.inputfile+';')
 			myfeatures=[str(x) for x in instance.features]
+			myexitcodes=[str(x) for x in instance.exitcodes]
 			myruntimes=[str(x) for x in instance.runtimes]
-			f.write(','.join(myfeatures)+';'+','.join(myruntimes)+'\n')
+			f.write(','.join(myfeatures)+';'+','.join(myruntimes)+';'+','.join(myexitcodes)+'\n')
 		f.close()
 		return True
 

@@ -22,6 +22,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 //}}}
 #include "../Decomposer.h"
 #include "../options/Choice.h"
+#include <sharp/ExtendedHypertree.hpp>
 
 namespace decomposer {
 
@@ -32,6 +33,8 @@ public:
 
 	virtual DecompositionPtr decompose(const Hypergraph& instance) const override;
 
+	static int decompwidth;
+	static int jjdist;
 private:
 	static const std::string OPTION_SECTION;
 

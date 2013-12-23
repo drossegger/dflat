@@ -20,8 +20,12 @@ class RunTest:
 		
 
 	def run(self):
+		count=0	
 		for instance in self.instances:
+			count+=1
 			times=[]
+			exitcodes=[]
+			print "Instance %s/%s"%(count,len(self.instances))
 			for portfolio in self.portfolios:
 				program=misc.util.buildProgramString(self.dflat,instance,' --portfolio '+portfolio+' ')
 				timestart=time.clock()
@@ -34,8 +38,12 @@ class RunTest:
 						call.kill()
 						times.append((portfolio,-100))
 				timeend=time.clock()
+				call.poll()
+				exitcodes.append((portfolio, call.returncode))
 				times.append((portfolio,timeend-timestart))
 			instance.runtimes=times
+			instance.exitcodes=exitcodes
+			print '\n'
 		return self.instances
 
 

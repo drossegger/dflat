@@ -51,6 +51,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_executable(dflat
 	${FLEX_Scanner_OUTPUTS}
 	${BISON_Parser_OUTPUTS}
+	extractors/TreeWidthExtractor.cpp
+	extractors/FeatureExtractor.cpp
+	extractors/JJDistExtractor.cpp
 	parser/Driver.cpp
 	parser/Terms.cpp
 	options/Option.cpp

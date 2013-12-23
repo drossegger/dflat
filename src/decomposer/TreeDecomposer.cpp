@@ -19,7 +19,6 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
 //}}}
 #include <cassert>
-#include <sharp/ExtendedHypertree.hpp>
 #include <sharp/BucketEliminationAlgorithm.hpp>
 #include <sharp/Problem.hpp>
 #include <sharp/AbstractEliminationOrdering.hpp>
@@ -131,7 +130,10 @@ DecompositionPtr TreeDecomposer::decompose(const Hypergraph& instance) const
 
 	// Use SHARP to decompose
 	SharpProblem problem(instance, algorithm);
+	
 	std::unique_ptr<sharp::ExtendedHypertree> td(problem.calculateHypertreeDecomposition());
+	//decompwidth=td->getTreeWidth();
+	//jjdist=td->getJoinJoinDistanceSum();
 	assert(td);
 
 	// Normalize

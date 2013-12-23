@@ -1,13 +1,19 @@
 import sys
 from test.FeatureExtractors import GringoFeatureExtractor
+from test.FeatureExtractors import EdgeFeatureExtractor
+from test.FeatureExtractors import ConfigFeatureExtractor
 from test.RunTest import RunTest 
 from output.TextWriter import *
 from misc.ConfigParser import *
 from misc.util import buildProgramString
 
 c=ConfigParser()
-f=GringoFeatureExtractor(c.gringo, c.instances)
-instances=f.extract()
+gfe=GringoFeatureExtractor(c.gringo, c.instances)
+efe=EdgeFeatureExtractor(c.instances)
+cfe=ConfigFeatureExtractor(c.instances)
+instances=gfe.extract()
+instances=efe.extract()
+instances=cfe.extract()
 for instance in instances:
 	 for feature in instance.features:
 		 print feature
@@ -19,6 +25,6 @@ if lbw.write(instances)==False:
 	sys.exit(1)
 
 #print buildProgramString(c.dflat,instance,' --portfolio none')
-for instance in instances:
-	print instance.features
-	print instance.runtimes
+#for instance in instances:
+#	print instance.features
+#	print instance.runtimes
