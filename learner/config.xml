@@ -5,7 +5,7 @@
 	<portfolio>frumpy</portfolio>
 	<portfolio>crafty</portfolio>
 	<portfolio>none</portfolio>
-	<instances>
+	<!--<instances>
 		<instance>
 			<seed>1</seed>
 			<normalization>none</normalization>
@@ -14,7 +14,17 @@
 			<edge>neg</edge>
 			<input-file>/home/dino/workspace/dflat/learning-instances/sat_6_5.lp</input-file>
 		</instance>
-	</instances>
+	</instances>-->
+	<instance-group>
+		<program>/home/dino/workspace/dflat/applications/sat/dynamic.lp</program>
+		<edge>pos</edge>
+		<edge>neg</edge>
+		<input-file-dir>/home/dino/workspace/dflat/learning-instances/test/</input-file-dir>
+		<normalization join-type='default'>semi</normalization>
+		<normalization join-type='extra'>semi</normalization>
+		<normalization>weak</normalization>
+		<normalization>none</normalization>
+	</instance-group>
 	<features>
 		<feature name='tw' size='1' />
 		<feature name='nor' />

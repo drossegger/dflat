@@ -170,12 +170,11 @@ int Application::run(int argc, char** argv)
 			(*it)->extract(&r);	
 			cout << (*it)->getName() << ";" << r << endl;
 		}
-		cout << "end features" << endl;
+		cout << "end features" << endl;*/
 		cout << "begin features" << endl;
-		cout << "dw;"<< double(treeDecomposer.decompwidth) << endl;
-		cout << "jjdist;" << double(treeDecomposer.jjdist) << endl;
+		cout << "dw;"<< double(decomposition->getTDWidth()) << endl;
 		cout << "end features" << endl;
-		return 0;*/
+		return 0;
 	}
 
 	//Solve with Portfolio

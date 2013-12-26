@@ -1,6 +1,7 @@
 from misc.ConfigParser import ConfigParser
 from misc.Containers import Instance
 from multiprocessing import Event
+from output.TextWriter import LBWriter
 import time,subprocess
 import misc.util
 import sys
@@ -21,6 +22,7 @@ class RunTest:
 
 	def run(self):
 		count=0	
+		lbwriter=LBWriter('learningbase.csv')
 		for instance in self.instances:
 			count+=1
 			times=[]
@@ -40,10 +42,13 @@ class RunTest:
 				timeend=time.clock()
 				call.poll()
 				exitcodes.append((portfolio, call.returncode))
-				times.append((portfolio,timeend-timestart))
+				if (timeend-timestart) < self.maxtime:
+					times.append((portfolio,timeend-timestart))
 			instance.runtimes=times
 			instance.exitcodes=exitcodes
-			print '\n'
+			lbwriter.write([instance])
+			
+			
 		return self.instances
 
 

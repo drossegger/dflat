@@ -4,7 +4,7 @@ class Instance:
 	inputfile=''
 	edges=[]
 	seed=1
-	defjoin=False
+	defjoin=True
 	normalization='none'
 	problemtype='counting'
 	features=[]

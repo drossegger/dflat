@@ -151,6 +151,7 @@ DecompositionPtr TreeDecomposer::decompose(const Hypergraph& instance) const
 
 	// Transform SHARP's tree decomposition into our format
 	DecompositionPtr result = transformTd(*normalized, !optNoEmptyLeaves.isUsed(), normalizationType, problem, app);
+	result->setTDWidth(normalized->getTreeWidth());
 	app.getDebugger().decomposerResult(*result);
 	return result;
 }
