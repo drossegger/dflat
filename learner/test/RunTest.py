@@ -1,9 +1,9 @@
-from misc.ConfigParser import ConfigParser
-from misc.Containers import Instance
+from input.ConfigParser import ConfigParser
+from base.Containers import Instance
 from multiprocessing import Event
 from output.TextWriter import LBWriter
 import time,subprocess
-import misc.util
+import base.util
 import sys
 
 class RunTest:

@@ -21,3 +21,10 @@ class LBWriter(TextWriter):
 		return True
 
 
+class CSVWriter(TextWriter):
+	def write(self,array,delim=';'):
+		f=open(self.outputfile,'a+')
+		for line in array:
+			f.write(';'.join(line)+'\n');
+		f.close()
+		return True
