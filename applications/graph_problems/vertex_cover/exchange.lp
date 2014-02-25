@@ -3,7 +3,7 @@ item(X) :- current(X), extend(R), childItem(R,X).
 
 { item(X) : introduced(X) }.
 :- edge(X,Y), current(X;Y), not item(X;Y).
-
+%begin only for opt
 currentCost(C) :- C = #count{ item(_) }. % Cost of current vertices
 cost(CC + IC) :- extend(R), childCost(R,CC), IC = #count{ item(X) : introduced(X) }.
 -leaf :- childNode(_).

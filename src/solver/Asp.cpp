@@ -156,6 +156,7 @@ void Asp::jumpyConfig(Clasp::ClaspConfig & config)
 		config.master()->params.reduce.growSched	      = Clasp::ScheduleStrategy::geom(100,1.5); //del-grow
 		config.master()->params.reduce.cflSched	        = Clasp::ScheduleStrategy::geom(10000,1.1); //del-cfl
 		config.master()->params.restart.sched           = Clasp::ScheduleStrategy::luby(100); //restarts
+		//config.eq.noEq();
  
 }
 void Asp::frumpyConfig(Clasp::ClaspConfig & config)

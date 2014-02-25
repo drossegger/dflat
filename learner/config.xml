@@ -12,17 +12,18 @@
 			<program>/home/dino/workspace/dflat/applications/sat/dynamic.lp</program>
 			<edge>pos</edge>
 			<edge>neg</edge>
-			<input-file>/home/dino/workspace/dflat/learning-instances/sat_6_5.lp</input-file>
+			<input-file>/home/dino/workspace/dflat/learning-instances-done/sat_6_5.lp</input-file>
 		</instance>
 	</instances>-->
 	<instance-group>
-		<program>/home/dino/workspace/dflat/applications/sat/dynamic.lp</program>
-		<edge>pos</edge>
-		<edge>neg</edge>
-		<input-file-dir>/home/dino/workspace/dflat/learning-instances/</input-file-dir>
+		<program>/home/dino/workspace/dflat/test_encodings/dynamic.lp</program>
+		<exchange>/home/dino/workspace/dflat/test_encodings/exchange.lp</exchange>
+		<edge>edge</edge>
+		<input-file-dir>/home/dino/workspace/dflat/test_instances/</input-file-dir>
 		<normalization join-type='default'>semi</normalization>
 		<normalization join-type='extra'>semi</normalization>
-		<normalization>weak</normalization>
+		<normalization join-type='default'>weak</normalization>
+		<normalization join-type='extra'>weak</normalization>
 		<normalization>none</normalization>
 	</instance-group>
 	<features>
