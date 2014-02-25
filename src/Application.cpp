@@ -178,14 +178,15 @@ int Application::run(int argc, char** argv)
 	}
 
 	//Solve with Portfolio
-	Solver* mysolver=&(decomposition->getSolver());
+	//Solver* mysolver = &(decomposition->getSolver());
 	if (optPortfolio.isUsed()){
 		std::string value=optPortfolio.getValue();
-		if(value=="frumpy")mysolver->setExtraParam("portfolio",FRUMPY);
-		else if(value=="jumpy")mysolver->setExtraParam("portfolio",JUMPY);
-		else if(value=="crafty")mysolver->setExtraParam("portfolio",CRAFTY);
+		if(value=="frumpy")setExtraParamRecursively(decomposition,"portfolio",(int)FRUMPY);
+		else if(value=="jumpy")setExtraParamRecursively(decomposition,"portfolio",(int)JUMPY);
+		else if(value=="crafty")setExtraParamRecursively(decomposition,"portfolio",(int)CRAFTY);
+		else if(value=="nopre")setExtraParamRecursively(decomposition,"portfolio",(int)NOPRE);
 	}
-	ItemTreePtr rootItree = mysolver->compute();
+	ItemTreePtr rootItree = decomposition->getSolver().compute();
 
 	std::cout << "Solutions:" << std::endl;
 	if(rootItree)
@@ -197,6 +198,15 @@ int Application::run(int argc, char** argv)
 	return 10;
 }
 
+void Application::setExtraParamRecursively(DecompositionPtr decomp, std::string name, int param){
+	(decomp->getSolver()).setExtraParam(name, param);
+
+	for (DecompositionPtr child : decomp->getChildren()){
+		setExtraParamRecursively(child, name, param);
+	}
+
+
+}
 void Application::usage() const
 {
 	std::cerr << "Usage: " << binaryName << " [options] < instance" << std::endl;

@@ -1,5 +1,5 @@
 # You probably need to adjust the *_dir variables before running "make"
-cxxflags_release="-DWITH_THREADS=0"
+cxxflags_release="-DWITH_THREADS=0 -g"
 cxxflags_debug=$(cxxflags_release)
 cxxflags_gprof=$(cxxflags_debug)
 cxxflags_static=$(cxxflags_release)
@@ -49,6 +49,7 @@ release:
 		-Dsharp_dir=$(sharp_dir) \
 	&& $(MAKE)
 
+.PHONY: debug
 debug:
 	mkdir -p build/debug
 	cd build/debug && \

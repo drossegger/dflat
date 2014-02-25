@@ -50,10 +50,11 @@ protected:
 	std::string encodingFile;
 	bool tableMode;
 private:
-	void getClaspConfig(Clasp::ClaspConfig & config);
-	void frumpyConfig(Clasp::ClaspConfig & config);
-	void jumpyConfig(Clasp::ClaspConfig & config);
-	void craftyConfig(Clasp::ClaspConfig & config);
+	void getClaspConfig(Clasp::ClaspConfig &config);
+	void frumpyConfig(Clasp::ClaspConfig &config);
+	void jumpyConfig(Clasp::ClaspConfig &config);
+	void craftyConfig(Clasp::ClaspConfig &config);
+	void nopreConfig(Clasp::ClaspConfig &config);
 };
 
 

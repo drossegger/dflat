@@ -19,6 +19,7 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 */
 //}}}
 #include <sstream>
+#include <iostream>
 #include <gringo/streams.h>
 
 #include "Asp.h"
@@ -102,6 +103,7 @@ ItemTreePtr Asp::compute()
 	Clasp::ClaspConfig config;
 	getClaspConfig(config);
 	config.enumerate.numModels = 0;
+	
 	Clasp::ClaspFacade clasp;
 	clasp.solve(inputReader, config, cb.get());
 
@@ -118,7 +120,7 @@ void Asp::getClaspConfig(Clasp::ClaspConfig & config){
 	while (!params.empty()){
 		p=params.back();
 		params.pop_back();
-		if(p.name=="portfolio"){
+		if(p.name.compare("portfolio")==0){
 			switch(p.value){
 				case JUMPY:		
 					jumpyConfig(config);
@@ -128,6 +130,9 @@ void Asp::getClaspConfig(Clasp::ClaspConfig & config){
 					break;
 				case CRAFTY:
 					craftyConfig(config);
+					break;
+				case NOPRE:
+					nopreConfig(config);
 					break;
 				default:
 					;
@@ -156,8 +161,11 @@ void Asp::jumpyConfig(Clasp::ClaspConfig & config)
 		config.master()->params.reduce.growSched	      = Clasp::ScheduleStrategy::geom(100,1.5); //del-grow
 		config.master()->params.reduce.cflSched	        = Clasp::ScheduleStrategy::geom(10000,1.1); //del-cfl
 		config.master()->params.restart.sched           = Clasp::ScheduleStrategy::luby(100); //restarts
-		//config.eq.noEq();
- 
+
+}
+void Asp::nopreConfig(Clasp::ClaspConfig & config)
+{
+		config.eq.noEq();
 }
 void Asp::frumpyConfig(Clasp::ClaspConfig & config)
 {

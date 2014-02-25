@@ -22,8 +22,9 @@ along with D-FLAT.  If not, see <http://www.gnu.org/licenses/>.
 //}}}
 #include "options/OptionHandler.h"
 #include "options/Choice.h"
-#define PORTFOLIO_SIZE 4
-enum {NONE,JUMPY,FRUMPY,CRAFTY};
+#include "Decomposition.h"
+#define PORTFOLIO_SIZE 5
+enum {NONE,JUMPY,FRUMPY,CRAFTY,NOPRE};
 class Decomposer;
 class SolverFactory;
 class Debugger;
@@ -53,10 +54,9 @@ public:
 
 	bool isPruningDisabled() const;
 
-	//Availabla Portfolios
 private:
 	static const std::string MODULE_SECTION;
-
+	void setExtraParamRecursively(DecompositionPtr decomp,std::string name, int param);
 	std::string binaryName;
 	std::string inputString;
 
