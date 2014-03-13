@@ -4,7 +4,7 @@ from multiprocessing import Event
 from output.TextWriter import LBWriter
 import time,subprocess
 import base.util
-import sys
+import sys,resource
 
 class RunTest:
 	memout=16777216
@@ -22,15 +22,11 @@ class RunTest:
 	def _printError(output):
 		sys.stderr.write("%s, %s %s"%(self.instance.program,self.instance.instance,output))
 		
-	def prepare(self):
-		#print 'ulimit -v %s'%self.memout
-		subprocess.Popen('ulimit -m %s'%self.memout,shell=True)
-		subprocess.Popen('ulimit -v %s'%self.memout,shell=True) 
-		subprocess.Popen('ulimit -H -m %s'%self.memout,shell=True)
-		subprocess.Popen('ulimit -H -v %s'%self.memout,shell=True)
+	def _limit(self):
+		resource.setrlimit(resource.RLIMIT_AS,(self.memout*1024,self.memout*1024))
+		resource.setrlimit(resource.RLIMIT_RSS,(self.memout*1024,self.memout*1024))
 
 	def run(self):
-		self.prepare()
 		count=0	
 		lbwriter=LBWriter(self.outputfile)
 		for instance in self.instances:
@@ -39,12 +35,12 @@ class RunTest:
 			exitcodes=[]
 			print "Instance %s/%s"%(count,len(self.instances))
 			for portfolio in self.portfolios:
-				program=base.util.buildProgramString(self.dflat,instance,' --portfolio '+portfolio+' ')
+				program=base.util.buildProgramString(self.dflat,instance,['--portfolio',portfolio])
+				print program
 				timestart=time.clock()
 				call=subprocess.Popen(program,
-						shell=True,
 						stdout=subprocess.PIPE,
-						stderr=subprocess.STDOUT)
+						stderr=subprocess.STDOUT,preexec_fn=self._limit)
 				while call.poll() is None:
 					if time.clock()-timestart > self.maxtime :
 						call.terminate()
