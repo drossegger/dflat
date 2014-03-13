@@ -172,7 +172,7 @@ int Application::run(int argc, char** argv)
 		}
 		cout << "end features" << endl;*/
 		cout << "begin features" << endl;
-		cout << "dw;"<< double(decomposition->getTDWidth()) << endl;
+		cout << "dw;"<< decomposition->getWidth() << endl;
 		cout << "end features" << endl;
 		return 0;
 	}
