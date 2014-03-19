@@ -20,7 +20,7 @@
 		<program>/home/dino/workspace/dflat/test_encodings/dynamic.lp</program>
 		<exchange>/home/dino/workspace/dflat/test_encodings/exchange.lp</exchange>
 		<edge>edge</edge>
-		<input-file-dir>/home/dino/workspace/dflat/test_instances/</input-file-dir>
+		<input-file-dir>/home/dino/workspace/dflat/test_instance2/</input-file-dir>
 		<normalization join-type='default'>semi</normalization>
 		<normalization join-type='extra'>semi</normalization>
 		<normalization join-type='default'>weak</normalization>

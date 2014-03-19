@@ -35,33 +35,30 @@ class RunTest:
 			exitcodes=[]
 			print "Instance %s/%s"%(count,len(self.instances))
 			for portfolio in self.portfolios:
+				print portfolio
 				program=base.util.buildProgramString(self.dflat,instance,['--portfolio',portfolio])
-				print program
 				timestart=time.clock()
 				call=subprocess.Popen(program,
+						stdin=open(instance.inputfile),
 						stdout=subprocess.PIPE,
 						stderr=subprocess.STDOUT,preexec_fn=self._limit)
-				while call.poll() is None:
+				while True:
+					if call.poll() is not None:
+						break
 					if time.clock()-timestart > self.maxtime :
 						call.terminate()
 						time.sleep(5)
 						call.kill()
 						#implement sleep 5 and then force kill (9)
-						call.poll()
-						if call.returncode==127 :
-							times.append((portfolio,-50))
-						else :
-							times.append((portfolio,-100))
+						times.append((portfolio,-100))
+					time.sleep(0.1)
 				
 				timeend=time.clock()
-				call.poll()
+				#call.poll()
 				
 				exitcodes.append((portfolio, call.returncode))
 				if (timeend-timestart) < self.maxtime:
-					if call.returncode==127 :
-						times.append((portfolio,-50))
-					else :
-						times.append((portfolio,timeend-timestart))
+					times.append((portfolio,timeend-timestart))
 
 			instance.runtimes=times
 			instance.exitcodes=exitcodes
