@@ -4,7 +4,7 @@ from multiprocessing import Event
 from output.TextWriter import LBWriter
 import time,subprocess
 import base.util
-import sys,resource
+import sys,resource,os
 
 class RunTest:
 	memout=16777216
@@ -29,6 +29,7 @@ class RunTest:
 	def run(self):
 		count=0	
 		lbwriter=LBWriter(self.outputfile)
+		DEVNULL = open(os.devnull,'wb')
 		for instance in self.instances:
 			count+=1
 			times=[]
@@ -39,9 +40,10 @@ class RunTest:
 				program=base.util.buildProgramString(self.dflat,instance,['--portfolio',portfolio])
 				timestart=time.clock()
 				call=subprocess.Popen(program,
-						stdin=open(instance.inputfile),
-						stdout=subprocess.PIPE,
-						stderr=subprocess.STDOUT,preexec_fn=self._limit)
+						stdin=myinput,
+						stdout=DEVNULL,
+						stderr=DEVNULL,
+						preexec_fn=self._limit)
 				while True:
 					if call.poll() is not None:
 						break
@@ -65,6 +67,7 @@ class RunTest:
 			lbwriter.write([instance])
 			
 			
+		DEVNULL.close()
 		return self.instances
 
 
