@@ -1,12 +1,9 @@
-import sys
 from test.FeatureExtractors import GringoFeatureExtractor
 from test.FeatureExtractors import EdgeFeatureExtractor
 from test.FeatureExtractors import ConfigFeatureExtractor
 from test.FeatureExtractors import DynamicFeatureExtractor
 from test.RunTest import RunTest 
-from output.TextWriter import *
-from input.ConfigParser import *
-from base.util import buildProgramString
+from input.ConfigParser import ConfigParser
 
 c=ConfigParser()
 gfe=GringoFeatureExtractor(c.gringo, c.instances)
@@ -16,15 +13,14 @@ dfe=DynamicFeatureExtractor(c.dflat,c.instances)
 #instances=gfe.extract()
 instances=efe.extract()
 instances=cfe.extract()
-#instances=dfe.extract()
+instances=dfe.extract()
+instances=[i for i in instances if myFilter(i)]
 r=RunTest(c.dflat,instances,c.portfolios)
 instances=r.run()
-#lbw=LBWriter('learningbase.csv')
-#if lbw.write(instances)==False: 
-#	print "ERROR writing File"
-#	sys.exit(1)
 
-#print buildProgramString(c.dflat,instance,' --portfolio none')
-#for instance in instances:
-#	print instance.features
-#	print instance.runtimes
+def myFilter(i):
+	for f in i.features:
+		if f[1]==-1:
+			return False
+	return True
+

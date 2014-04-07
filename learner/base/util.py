@@ -1,6 +1,3 @@
-from Containers import Instance
-from ConfigParser import ConfigParser
-
 def buildProgramString(dflat,instance,arguments=[]):
 	ps=[dflat]+arguments+['--seed',str(instance.seed),'--tables','-n',str(instance.normalization),'--elimination',str(instance.heuristic)]
 	#ps=dflat +arguments+ ' --seed ' + str(instance.seed) + ' --tables' + ' -n ' + str(instance.normalization) + ' --elimination '+str(instance.heuristic)

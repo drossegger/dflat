@@ -1,6 +1,4 @@
-import subprocess, re, base.util, os
-from input.ConfigParser import *
-from base.Containers import Instance
+import subprocess, re, base.util,sys,time
 
 
 class FeatureExtractor:
@@ -32,12 +30,23 @@ class DynamicFeatureExtractor(FeatureExtractor):
 		
 
 	def extractInstance(self,instance):
+		timestart=time.clock()
 		output = subprocess.check_output(base.util.buildProgramString(self.dflat,instance,['--ext-feat']),stdin=open(instance.inputfile))
+		checker=True
+		while True:
+			if output.poll is not None:
+				break
+			if time.clock() - timestart >= 60:
+				output.kill()
+				time.sleep(5)
+				checker=False
 		result = re.compile(r'(.*\n)*begin features\n((.*\n)+)end features\n(.*\n)*',re.MULTILINE)
 		lines = result.search(output).group(2).splitlines()
 		lines = [x.split(';') for x in lines]
-		print [(x[0],float(x[1])) for x in lines]
-		return [(x[0],float(x[1])) for x in lines]
+		if checker==False:
+			return [(x[0],-1) for x in lines]
+		else:
+			return [(x[0],float(x[1])) for x in lines]
 
 class GringoFeatureExtractor(FeatureExtractor):
 	def __init__(self, gringo,instances):

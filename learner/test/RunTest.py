@@ -1,6 +1,3 @@
-from input.ConfigParser import ConfigParser
-from base.Containers import Instance
-from multiprocessing import Event
 from output.TextWriter import LBWriter
 import time,subprocess
 import base.util
@@ -9,7 +6,7 @@ import sys,resource,os
 class RunTest:
 	memout=16777216
 
-	def __init__(self, dflat, instances,portfolios,maxtime=600,outputfile='learningbase.csv'):
+	def __init__(self, dflat, instances,portfolios,maxtime=2400,outputfile='learningbase.csv'):
 		self.dflat=dflat
 		self.instances=instances
 		self.portfolios=portfolios
@@ -19,7 +16,7 @@ class RunTest:
 
 
 		
-	def _printError(output):
+	def _printError(self,output):
 		sys.stderr.write("%s, %s %s"%(self.instance.program,self.instance.instance,output))
 		
 	def _limit(self):
@@ -39,6 +36,7 @@ class RunTest:
 				print portfolio
 				program=base.util.buildProgramString(self.dflat,instance,['--portfolio',portfolio])
 				timestart=time.clock()
+				myinput=open(instance.inputfile)
 				call=subprocess.Popen(program,
 						stdin=myinput,
 						stdout=DEVNULL,
@@ -61,6 +59,7 @@ class RunTest:
 				exitcodes.append((portfolio, call.returncode))
 				if (timeend-timestart) < self.maxtime:
 					times.append((portfolio,timeend-timestart))
+				myinput.close()
 
 			instance.runtimes=times
 			instance.exitcodes=exitcodes
