@@ -35,17 +35,17 @@ class RunTest:
 			for portfolio in self.portfolios:
 				print portfolio
 				program=base.util.buildProgramString(self.dflat,instance,['--portfolio',portfolio])
-				timestart=time.clock()
+				timestart=time.time()
 				myinput=open(instance.inputfile)
 				call=subprocess.Popen(program,
 						stdin=myinput,
 						stdout=DEVNULL,
-						stderr=DEVNULL,
+						stderr=subprocess.PIPE,
 						preexec_fn=self._limit)
 				while True:
 					if call.poll() is not None:
 						break
-					if time.clock()-timestart > self.maxtime :
+					if time.time()-timestart > self.maxtime :
 						call.terminate()
 						time.sleep(5)
 						call.kill()
@@ -53,12 +53,12 @@ class RunTest:
 						times.append((portfolio,-100))
 					time.sleep(0.1)
 				
-				timeend=time.clock()
+				timeend=time.time()
 				#call.poll()
 				
 				exitcodes.append((portfolio, call.returncode))
 				if (timeend-timestart) < self.maxtime:
-					times.append((portfolio,timeend-timestart))
+					times.append((portfolio,base.util.extractTime(call.stderr.read())))
 				myinput.close()
 
 			instance.runtimes=times

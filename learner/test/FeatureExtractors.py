@@ -30,18 +30,18 @@ class DynamicFeatureExtractor(FeatureExtractor):
 		
 
 	def extractInstance(self,instance):
-		timestart=time.clock()
-		output = subprocess.check_output(base.util.buildProgramString(self.dflat,instance,['--ext-feat']),stdin=open(instance.inputfile))
+		timestart=time.time()
+		output = subprocess.Popen(base.util.buildProgramString(self.dflat,instance,['--ext-feat']),stdin=open(instance.inputfile),stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		checker=True
 		while True:
-			if output.poll is not None:
+			if output.poll() is not None:
 				break
-			if time.clock() - timestart >= 60:
+			if time.time() - timestart >= 60:
 				output.kill()
 				time.sleep(5)
 				checker=False
 		result = re.compile(r'(.*\n)*begin features\n((.*\n)+)end features\n(.*\n)*',re.MULTILINE)
-		lines = result.search(output).group(2).splitlines()
+		lines = result.search(output.stdout.read()).group(2).splitlines()
 		lines = [x.split(';') for x in lines]
 		if checker==False:
 			return [(x[0],-1) for x in lines]

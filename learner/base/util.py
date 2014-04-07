@@ -1,5 +1,6 @@
+import re
 def buildProgramString(dflat,instance,arguments=[]):
-	ps=[dflat]+arguments+['--seed',str(instance.seed),'--tables','-n',str(instance.normalization),'--elimination',str(instance.heuristic)]
+	ps=['time','-p',dflat]+arguments+['--seed',str(instance.seed),'--tables','-n',str(instance.normalization),'--elimination',str(instance.heuristic)]
 	#ps=dflat +arguments+ ' --seed ' + str(instance.seed) + ' --tables' + ' -n ' + str(instance.normalization) + ' --elimination '+str(instance.heuristic)
 	for edge in instance.edges:
 		ps=ps+['-e', edge]
@@ -9,4 +10,11 @@ def buildProgramString(dflat,instance,arguments=[]):
 		ps=ps+['--default-join']
 	ps=ps+['-p', instance.exchange]
 	return ps
+
+def extractTime(output):
+	regex=re.compile('.*real (.+)')
+	time=regex.search(output).group(1)
+	print time
+	return time
+
 	

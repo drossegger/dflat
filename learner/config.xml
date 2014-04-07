@@ -21,7 +21,7 @@
 		<exchange>/home/dino/workspace/dflat/test_encodings/exchange.lp</exchange>
 		<edge>pos</edge>
 		<edge>neg</edge>
-		<input-file-dir>/home/dino/workspace/dflat/learning-instances/</input-file-dir>
+		<input-file-dir>/home/dino/workspace/dflat/finished-tests/learning-instances-done/</input-file-dir>
 		<normalization join-type='default'>semi</normalization>
 		<normalization join-type='extra'>semi</normalization>
 		<normalization join-type='default'>weak</normalization>
