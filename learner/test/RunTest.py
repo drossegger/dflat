@@ -1,7 +1,39 @@
 from output.TextWriter import LBWriter
 import time,subprocess
 import base.util
-import sys,resource,os
+import sys,resource,os,threading
+
+class RunCmd(threading.Thread):
+	def __init__(self,cmd,timeout,inp,memout):
+		threading.Thread.__init__(self)
+		self.cmd=cmd
+		self.timeout=timeout
+		self.inp=inp
+		self.err=None
+		self.memout=memout
+		self.exitcode=None
+	def _limit(self):
+		resource.setrlimit(resource.RLIMIT_AS,(self.memout*1024,self.memout*1024))
+		resource.setrlimit(resource.RLIMIT_RSS,(self.memout*1024,self.memout*1024))
+
+	def run(self):
+		self.call=subprocess.Popen(self.cmd,
+						stdin=open(self.inp),
+						stderr=subprocess.PIPE,
+						preexec_fn=self._limit)
+		self.exitcode=self.call.wait()
+		self.err=self.call.stderr.read()
+	def Run(self):
+		self.start()
+		self.join(self.timeout)
+		if self.is_alive():
+			self.call.kill()
+			self.exitcode=self.call.poll()
+			self.join()
+	def getError(self):
+		return self.err
+	def getExit(self):
+		return self.exitcode
 
 class RunTest:
 	memout=16777216
@@ -19,14 +51,9 @@ class RunTest:
 	def _printError(self,output):
 		sys.stderr.write("%s, %s %s"%(self.instance.program,self.instance.instance,output))
 		
-	def _limit(self):
-		resource.setrlimit(resource.RLIMIT_AS,(self.memout*1024,self.memout*1024))
-		resource.setrlimit(resource.RLIMIT_RSS,(self.memout*1024,self.memout*1024))
-
 	def run(self):
 		count=0	
 		lbwriter=LBWriter(self.outputfile)
-		DEVNULL = open(os.devnull,'wb')
 		for instance in self.instances:
 			count+=1
 			times=[]
@@ -35,38 +62,23 @@ class RunTest:
 			for portfolio in self.portfolios:
 				print portfolio
 				program=base.util.buildProgramString(self.dflat,instance,['--portfolio',portfolio])
-				timestart=time.time()
-				myinput=open(instance.inputfile)
-				call=subprocess.Popen(program,
-						stdin=myinput,
-						stdout=DEVNULL,
-						stderr=subprocess.PIPE,
-						preexec_fn=self._limit)
+				call=RunCmd(program,self.maxtime,instance.inputfile,self.memout)
 				while True:
-					if call.poll() is not None:
+					if call.getExit() is not None:
+						exitcodes.append((portfolio,call.returncode))
+						if call.getExit()==-15:
+							times.append((portfolio,-100))	
+						else:
+							times.append((portfolio, base.util.extractTime(call.getError())))
 						break
-					if time.time()-timestart > self.maxtime :
-						call.terminate()
-						time.sleep(5)
-						call.kill()
-						#implement sleep 5 and then force kill (9)
-						times.append((portfolio,-100))
-					time.sleep(0.1)
-				
-				timeend=time.time()
-				#call.poll()
-				
-				exitcodes.append((portfolio, call.returncode))
-				if (timeend-timestart) < self.maxtime:
-					times.append((portfolio,base.util.extractTime(call.stderr.read())))
-				myinput.close()
+					time.sleep(1)
+							
 
 			instance.runtimes=times
 			instance.exitcodes=exitcodes
 			lbwriter.write([instance])
 			
 			
-		DEVNULL.close()
 		return self.instances
 
 

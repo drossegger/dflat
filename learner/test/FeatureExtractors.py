@@ -41,7 +41,12 @@ class DynamicFeatureExtractor(FeatureExtractor):
 				time.sleep(5)
 				checker=False
 		result = re.compile(r'(.*\n)*begin features\n((.*\n)+)end features\n(.*\n)*',re.MULTILINE)
-		lines = result.search(output.stdout.read()).group(2).splitlines()
+		out=output.stdout.read()
+		print out
+		lines = result.search(out)
+		if lines is None:
+			return [("error",-1)]
+		lines = lines.group(2).splitlines()
 		lines = [x.split(';') for x in lines]
 		if checker==False:
 			return [(x[0],-1) for x in lines]
