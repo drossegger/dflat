@@ -11,10 +11,11 @@ def buildProgramString(dflat,instance,arguments=[]):
 	ps=ps+['-p', instance.exchange]
 	return ps
 
-def extractTime(output):
-	regex=re.compile('.*real (.+)')
+def extractTime(output,typ):
+	re.purge()
+	regex=re.compile(".*%s (.+)"%typ)
 	time=regex.search(output).group(1)
-	print time
+
 	return time
 
 	

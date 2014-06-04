@@ -17,11 +17,9 @@
 		</instance>
 	</instances>-->
 	<instance-group>
-		<program>/home/dino/workspace/dflat/test_encodings/dynamic.lp</program>
-		<exchange>/home/dino/workspace/dflat/test_encodings/exchange.lp</exchange>
-		<edge>pos</edge>
-		<edge>neg</edge>
-		<input-file-dir>/home/dino/workspace/dflat/finished-tests/learning-instances/</input-file-dir>
+		<program>../dominating_set_benchmark/dominating_set_dynamic.lp</program>
+		<edge>edge</edge>
+		<instance-file>../dominating_set_benchmark/dominating_set_test.csv</instance-file>
 		<normalization join-type='default'>semi</normalization>
 		<normalization join-type='extra'>semi</normalization>
 		<normalization join-type='default'>weak</normalization>

@@ -7,7 +7,7 @@ class TextReader:
 		f=open(self.path)
 		x=f.read()
 		f.close()
-		return x 
+		return x
 
 class LBReader(TextReader):
 	def read(self):
@@ -57,4 +57,12 @@ class LBReader(TextReader):
 		for portfolio in portfolios:
 			a=np.append(a,portfolio[0])
 		return a
+
+class InstanceReader(TextReader):
+	def read(self):
+		f=open(self.path)
+		x=f.read()
+		x=x.splitlines()
+		x=[a.split(";") for a in x]
+		return x
 

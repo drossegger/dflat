@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import sys,os
 from base.Containers import Instance 
+from input.TextReader import InstanceReader
 
 class ConfigParser:
 	xmlfile='config.xml'
@@ -18,31 +19,52 @@ class ConfigParser:
 	
 
 	def getInstanceGroups(self):
-	
 		for group in self.root.iter('instance-group'):
 			normalizations=[]	
 			for normalization in group.findall('normalization'):
 				normalizations.append((normalization.text,normalization.get('join-type')))
 			program=group.find('program').text
-			exchange=group.find('exchange').text
+			exchange=program
+			exchangeObj=group.find('exchange')
+			if exchangeObj != None:
+				exchange=exchangeObj.text
 			mlvl=group.find('multi-level')
-			inputfiledir=group.find('input-file-dir').text
-			xmlInstances=os.listdir(inputfiledir)
-			for xmlInstance in xmlInstances:
-				for normalization in normalizations:
-					instance=Instance()
-					instance.exchange=exchange
-					instance.program=program
-					instance.inputfile=inputfiledir+xmlInstance
-					instance.normalization=normalization[0]
-					if normalization[1]=='default':
-						instance.defjoin=True
-					if mlvl != None:
-						instance.multilevel=True
-					for edge in group.iter('edge'):
-						instance.edges.append(edge.text)
-					self.instances.append(instance)
-
+			instanceFile=group.find('instance-file')
+			if instanceFile != None:
+				ir=InstanceReader(instanceFile.text)
+				inst=ir.read()
+				for i in inst:
+					for normalization in normalizations:
+						instance=Instance()
+						instance.exchange=exchange
+						instance.program=program
+						instance.inputfile=i[0]
+						instance.seed=i[1]
+						instance.normalization=normalization[0]
+						if normalization[1]=='default':
+							instance.defjoin=True
+						if mlvl != None:
+							instance.multilevel=True
+						for edge in group.iter('edge'):
+							instance.edges.append(edge.text)
+						self.instances.append(instance)
+			else:
+				inputfiledir=group.find('input-file-dir').text
+				xmlInstances=os.listdir(inputfiledir)
+				for xmlInstance in xmlInstances:
+					for normalization in normalizations:
+						instance=Instance()
+						instance.exchange=exchange
+						instance.program=program
+						instance.inputfile=inputfiledir+xmlInstance
+						instance.normalization=normalization[0]
+						if normalization[1]=='default':
+							instance.defjoin=True
+						if mlvl != None:
+							instance.multilevel=True
+						for edge in group.iter('edge'):
+							instance.edges.append(edge.text)
+						self.instances.append(instance)
 
 
 	def getGringoPath(self):
