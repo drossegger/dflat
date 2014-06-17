@@ -1,0 +1,46 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.GainRatioAttributeEval 
+Search:weka.attributeSelection.Ranker -T -1.7976931348623157E308 -N -1
+Relation:     whatever
+Instances:    405
+Attributes:   12
+              gcomponents
+              gnontrivial
+              gpredicates
+              grules
+              gconstraints
+              nbredgefacts
+              nbredgepred
+              defjoin
+              normalization
+              heuristic
+              dw
+              label
+Evaluation mode:evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Attribute ranking.
+
+Attribute Evaluator (supervised, Class (nominal): 12 label):
+	Gain Ratio feature evaluator
+
+Ranked attributes:
+ 0.1618   9 normalization
+ 0.0956   8 defjoin
+ 0        2 gnontrivial
+ 0       11 dw
+ 0        4 grules
+ 0        3 gpredicates
+ 0        6 nbredgefacts
+ 0        5 gconstraints
+ 0       10 heuristic
+ 0        7 nbredgepred
+ 0        1 gcomponents
+
+Selected attributes: 9,8,2,11,4,3,6,5,10,7,1 : 11
+

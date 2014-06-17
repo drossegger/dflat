@@ -34,7 +34,8 @@ class LBReader(TextReader):
 		portfolios=ast.literal_eval('({0})'.format(portfolios))
 		a=np.array([])
 		for portfolio in portfolios:
-			a=np.append(a,portfolio[1])
+			if portfolio[1]=='real':
+				a=np.append(a,portfolio[2])
 		return a
 	def _convertFeatures(self,features):
 		features=ast.literal_eval('({0})'.format(features))
@@ -49,13 +50,11 @@ class LBReader(TextReader):
 		a=np.array(['',''])
 		features=ast.literal_eval('({0})'.format(firstline[2]))
 		for feature in features:
-			if feature[0]=='dw':
-				a=np.append(a,feature[0])
-			else:
 				a=np.append(a,feature[1])
 		portfolios=ast.literal_eval('({0})'.format(firstline[3]))
 		for portfolio in portfolios:
-			a=np.append(a,portfolio[0])
+			if portfolio[1]=='real':
+				a=np.append(a,portfolio[0])
 		return a
 
 class InstanceReader(TextReader):

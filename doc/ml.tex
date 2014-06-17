@@ -1,0 +1,106 @@
+Classification experiments where carried out to test if the data retrieved in the benchmarks lends itself to classification. The experiments where carried out using WEKA~\cite{WEKA}, as classifier support vectore machines where used through the \lstinline$libsvm$ package available for all major operating systems. The classifier was tested using $10$-fold cross validation on the \emph{Dominating Set} and \emph{SAT} dataset obtained from the benchmarks seperatly as well as both datasets joined. The data was labeled with numbers $0-5$ for the fastest portfolio according to the \emph{user} time from the benchmarks. The label together with its portfolio can be seen in Table~\ref{tbl:mlLabel}. The distribution of the labels for the two datasets can be seen in Figure~\ref{fig:mlDistr}.
+\begin{table}[h]
+	\center
+	\begin{tabular}{|r|l|}
+		\hline
+		Label & Portfolio\\
+		\hline
+		0 & not solved\footnote{The instance was not solved by any portfolio in the given time limit} \\
+		1 & jumpy\\
+		2 & frumpy\\
+		3 & crafty\\
+		4 & none \\
+		5 & nopre\\
+		\hline
+	\end{tabular}
+	\caption{Labels assigned to the corresponding portfolios}
+	\label{tbl:mlLabel}
+\end{table}
+
+\begin{figure}[h]
+	\caption{Distribution of the labels\label{fig:mlDistr}}
+\end{figure}
+
+\par $11$ features were used in the classification experiments. The features and their origin can be seen in Table~\ref{tbl:mlFeat}, details about the extraction can be found in Section~\ref{sec:impl}. Features tagged with \emph{user} are features usually supplied by the user when executing D-FLAT, the number of edge facts is counted in the input file and features tagged $gringo$ are features of the non-ground instance. They are also independent of the instance and therefore have the same value for all instances of an encoding. Therefore they were omitted in the experiments on the seperated datasets.
+
+Before the models were built, feature selection techniques were applied to get a feel which features effect the model the most.
+
+\begin{table}
+	\label{tbl:mlFeat}
+	\center
+	\begin{tabular}{|l|l|l|}
+		\hline
+		Name & Description & Origin \\
+		\hline
+		\lstinline$gcomponents$ & number of components\footnote{$function symbols+ predicate symbols$} & gringo\\
+		\lstinline$gnontrivial$ & number of nontrivial components & gringo\\
+		\lstinline$gpredicates$ & number of predicates & gringo \\
+		\lstinline$gconstraints$ & number of constraints & gringo\\
+		\lstinline$nbredgefacts$ & number of edge facts & instance file\\
+		\lstinline$nbredgepred$ & number of edge predicates & user \\
+		\lstinline$defjoin$ & $1$ if D-FLATs default join was used, $0$ otherwise & user\\
+		\lstinline$normalization$ & the normalization used (non, semi, normalized) & user\\
+		\lstinline$heuristic$ & the heuristic used to create the tree decomposition & user\\
+		\lstinline$dw$ & the decomposition width of the tree decomposition & D-FLAT\\
+		\hline
+	\end{tabular}
+	\caption{Features of the datasets}
+\end{table}
+
+\subsection{Dominating Set}
+The distribution of the labels can be seen in Figure~\ref{fig:dsLabels}. There are no \lstinline$term$ labels in this dataset since it was used prior for benchmarks and instances with runtime over the time limit where not executed again.
+\begin{figure}[h]
+	\center
+	\includegraphics[scale=0.4]{figures/domsetLabels.png}
+	\caption{Distribution of labels of Dominating Set\label{fig:dsLabels}}
+\end{figure}
+\par Three feature selection methods were used on the dataset all yielding the same result that the features \lstinline$defjoin$ and \lstinline$normalization$ are the only features impacting the model significantly. The model was therefore built on those two features as well as on all features.
+
+\par The model on all features had a $Precision$\footnote{$Precision=\frac{tp}{tp+fp}$} of $0.39$ and $Recall$\footnote{$Recall=\frac{tp}{tp+fn}$} of $0.41$, yielding a $F_1-score$\footnote{$F_1=2*\frac{precision*recall}{precision+recall}$} of $0.36$. Using only the two aforementioned features resulted in a slightly better model having $Precision=0.4$ and $Recall=0.44$, yielding a $F_1-score$ of $0.41$. The confusion matrix for both models can be seen in Table~\ref{tbl:dsCM}. 
+\begin{table}[h]
+\center
+	\begin{tabular}{|c|ccccc|ccccc|}
+		\hline
+		\multicolumn{6}{|c|}{All Attributes} &\multicolumn{5}{|c|}{normalization, defjoin}\\
+		\hline &$1$&$2$&$3$&$4$&$5$&$1$&$2$&$3$&$4$&$5$\\
+		 \hline$1$&$23$&$0$&$77$ &$8$ &$1$&$62$&$0$&$42$&$2$&$3$\\
+		 $2$&$3$ &$0$&$10$ &$1$ &$0$&$3$ &$0$&$5$ &$1$&$5$\\
+		 $3$&$26$&$0$&$106$&$5$ &$3$&$63$&$0$&$64$&$6$&$7$\\
+		 $4$&$9$ &$0$&$42$ &$12$&$5$&$1$ &$0$&$48$&$3$&$16$\\
+		 $5$&$14$&$0$&$27$ &$30$&$3$&$2$ &$0$&$21$&$1$&$50$\\
+		 \hline
+	\end{tabular}
+	\caption{Confusion Matrix for the Dominating Set dataset}
+	\label{tbl:dsCM}
+\end{table}
+\par The model using all features overclassifies instances as $3$ (\emph{crafty}), resulting in a high recall of $77.5$ of this label but bad recall for all other labels. The precision however remains fairly balanced throughout the labels. It is interesting to see that both classifiers were not able to label an instance of $2$ (\emph{frumpy}) correctly since there are only very few instances labeled $2$ in the dataset. The classifier on only \lstinline$normalization$ and \lstinline$defjoi$ still leans to overclassifying instances as $3$ but not to the same extent as the model working on all features.
+Therefore it has better precision of $0.62$ and is overall the slightly better classifier.
+
+\subsection{SAT}
+The distribution of the labels of the instances can be seen in Figure~\ref{fig:satLabels}. This dataset contains instances which could not be solved in the specified maximum time in the benchmark, even the majority of the instances belongs to that class. 
+
+\begin{figure}[h]
+	\center
+	\includegraphics[scale=0.4]{figures/satLabels.png}
+	\caption{Labels of SAT\label{fig:satLabels}}
+\end{figure}
+
+\par Again feature selection methods were used to determine the features with the most impact on the result. Interestingly the heuristics determined $dw$ and $nbredgefacts$ to have big impact, $normalization$ to have a little bit of impact and the other features to have very little to no impact on the prediction quality. Therefore models where built using these three features, all features as well as only $dw$.
+
+The model built on all features has $precision=0.409$ and $recall=0.447$, yielding $F_1=0.42$ while the model built on $nomalization$, $dw$ and $nbredgefacts$ has $precision=0.368$ and $recall=0.397$, yielding $F_1 =0.374$. The classifier built of only $dw$ has $precision=0.377$ and recall $F_1=0.414$. According to the $F_1$ score the model on all features and the model built on only $dw$ perform equally, while the model built on the three features predicted best by the feature selection heuristics performs sligthly worse. The confusion matrix for the models can be seen in Table~\ref{tbl:satCM}.
+
+\begin{table}[h]
+	\center
+	\begin{tabular}{|c|ccccc|ccccc|ccccc|}
+		\hline\multicolumn{6}{|c|}{All Attributes} &\multicolumn{5}{|c|}{norm, defjoin,dw}&\multicolumn{5}{|c|}{dw}\\
+		\hline &$0$&$1$&$2$&$3$&$4$&$0$&$1$&$2$&$3$&$4$&$0$&$1$&$2$&$3$&$4$\\
+		\hline $0$&$44$&$0$&$4$&$9$&$7$&$41$&$0$&$5$&$11$&$7$&$43$&$0$&$1$&$14$&$6$\\
+					 $1$&$3$ &$4$&$0$&$3$&$2$&$3$&$4$&$0$&$3$&$2$&$5$&$0$&$0$&$6$&$1$\\
+           $2$&$11$&$1$&$1$&$9$&$4$&$12$&$1$&$0$&$8$&$5$&$10$&$0$&$0$&$11$&$5$\\
+				   $3$&$17$&$2$&$3$&$13$&$5$&$17$&$1$&$6$&$11$&$5$&$19$&$0$&$0$&$18$&$3$\\
+				   $4$&$11$&$1$&$2$&$5$&$18$&$13$&$0$&$2$&$7$&$15$&$6$&$0$&$0$&$9$&$22$\\
+		\hline
+	\end{tabular}
+	\caption{Confusion Matrix for SAT}
+	\label{tbl:satCM}
+\end{table}
