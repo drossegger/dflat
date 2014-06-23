@@ -1,0 +1,38 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.GainRatioAttributeEval 
+Search:weka.attributeSelection.Ranker -T -1.7976931348623157E308 -N -1
+Relation:     whatever-weka.filters.unsupervised.attribute.Remove-R1-2
+Instances:    405
+Attributes:   12
+              gcomponents
+              gnontrivial
+              gpredicates
+              grules
+              gconstraints
+              nbredgefacts
+              nbredgepred
+              defjoin
+              normalization
+              heuristic
+              dw
+              label
+Evaluation mode:10-fold cross-validation
+
+
+
+=== Attribute selection 10 fold cross-validation (stratified), seed: 1 ===
+
+average merit      average rank  attribute
+ 0.177 +- 0.008     1   +- 0       9 normalization
+ 0.103 +- 0.011     2   +- 0       8 defjoin
+ 0     +- 0         3   +- 0       2 gnontrivial
+ 0     +- 0         4   +- 0      11 dw
+ 0     +- 0         5   +- 0       4 grules
+ 0     +- 0         6   +- 0       3 gpredicates
+ 0     +- 0         7   +- 0       6 nbredgefacts
+ 0     +- 0         8   +- 0       5 gconstraints
+ 0     +- 0         9   +- 0      10 heuristic
+ 0     +- 0        10   +- 0       7 nbredgepred
+ 0     +- 0        11   +- 0       1 gcomponents
+

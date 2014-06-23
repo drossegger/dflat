@@ -1,0 +1,50 @@
+=== Run information ===
+
+Scheme:weka.classifiers.functions.LibSVM -S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -seed 1
+Relation:     whatever-weka.filters.unsupervised.attribute.Remove-R1-2-weka.filters.unsupervised.attribute.Remove-R1-7,10-11
+Instances:    405
+Attributes:   3
+              defjoin
+              normalization
+              label
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+LibSVM wrapper, original code by Yasser EL-Manzalawy (= WLSVM)
+
+Time taken to build model: 0.29 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         144               35.5556 %
+Incorrectly Classified Instances       261               64.4444 %
+Kappa statistic                          0.1305
+Mean absolute error                      0.2148
+Root mean squared error                  0.4635
+Relative absolute error                 84.6118 %
+Root relative squared error            130.1802 %
+Total Number of Instances              405     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.555     0.247      0.455     0.555     0.5        0.654    1
+                 0.336     0.411      0.301     0.336     0.318      0.462    3
+                 0.75      0.133      0.407     0.75      0.528      0.809    5
+                 0         0          0         0         0          0.5      2
+                 0.044     0.092      0.088     0.044     0.059      0.476    4
+                 0         0          0         0         0          0.5      6
+Weighted Avg.    0.356     0.239      0.287     0.356     0.313      0.558
+
+=== Confusion Matrix ===
+
+  a  b  c  d  e  f   <-- classified as
+ 61 38  3  0  8  0 |  a = 1
+ 68 47  7  0 18  0 |  b = 3
+  2  6 33  0  3  0 |  c = 5
+  2  5  5  0  2  0 |  d = 2
+  1 48 16  0  3  0 |  e = 4
+  0 12 17  0  0  0 |  f = 6
+

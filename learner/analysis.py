@@ -14,13 +14,17 @@ x=np.delete(x,(0),axis=0)
 for line in x:
 	runtimes=line[line.shape[0]-5:]
 	runtimes=[float(runtime) for runtime in runtimes]
-	label=0
-	for i in range(5):
-		if runtimes[i] > 0:
-			if label==0:
+	label=1
+	if len(set(runtimes)) == 1:
+		if runtimes[0]<0:
+			label=0
+		else:
+			label=6
+	else:
+		for i in range(5):
+			if runtimes[i]<=runtimes[label-1]:
 				label=i+1
-			elif runtimes[i]<=runtimes[label-1]:
-				label=i+1
+		
 	line=line[:-5]
 	line=np.append(line,label)
 	norm=np.vstack((norm,line))

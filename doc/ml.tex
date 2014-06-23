@@ -1,4 +1,5 @@
-Classification experiments where carried out to test if the data retrieved in the benchmarks lends itself to classification. The experiments where carried out using WEKA~\cite{WEKA}, as classifier support vectore machines where used through the \lstinline$libsvm$ package available for all major operating systems. The classifier was tested using $10$-fold cross validation on the \emph{Dominating Set} and \emph{SAT} dataset obtained from the benchmarks seperatly as well as both datasets joined. The data was labeled with numbers $0-5$ for the fastest portfolio according to the \emph{user} time from the benchmarks. The label together with its portfolio can be seen in Table~\ref{tbl:mlLabel}. The distribution of the labels for the two datasets can be seen in Figure~\ref{fig:mlDistr}.
+Classification experiments where carried out to test if the data retrieved in the benchmarks lends itself to classification. The experiments where carried out using WEKA~\cite{WEKA}, as classifier support vectore machines where used through the \lstinline$libsvm$ package available for all major operating systems. The classifier was tested using $10$-fold cross validation on the \emph{Dominating Set} and \emph{SAT} dataset obtained from the benchmarks seperatly as well as both datasets joined. The data was labeled with numbers $0-6$ for the fastest portfolio according to the \emph{user} time from the benchmarks.
+The labels together with its portfolio can be seen in Table~\ref{tbl:mlLabel}. The experiments have been performed on the data with and without the label $6$, \emph{eq} which says that the runtimes were equal for all instances. For the experiments without the \emph{eq} label the instances with equal runtimes have been labelled $5$.
 \begin{table}[h]
 	\center
 	\begin{tabular}{|r|l|}
@@ -11,22 +12,19 @@ Classification experiments where carried out to test if the data retrieved in th
 		3 & crafty\\
 		4 & none \\
 		5 & nopre\\
+		6 & eq\\
 		\hline
 	\end{tabular}
 	\caption{Labels assigned to the corresponding portfolios}
 	\label{tbl:mlLabel}
 \end{table}
 
-\begin{figure}[h]
-	\caption{Distribution of the labels\label{fig:mlDistr}}
-\end{figure}
 
-\par $11$ features were used in the classification experiments. The features and their origin can be seen in Table~\ref{tbl:mlFeat}, details about the extraction can be found in Section~\ref{sec:impl}. Features tagged with \emph{user} are features usually supplied by the user when executing D-FLAT, the number of edge facts is counted in the input file and features tagged $gringo$ are features of the non-ground instance. They are also independent of the instance and therefore have the same value for all instances of an encoding. Therefore they were omitted in the experiments on the seperated datasets.
+\par $11$ features were used in the classification experiments. The features and their origin can be seen in Table~\ref{tbl:mlFeat}, details about the extraction can be found in Section~\ref{sec:impl}. Features tagged with \emph{user} are features usually supplied by the user when executing D-FLAT, the number of edge facts is counted in the input file and features tagged $gringo$ are features of the non-ground instance. They are also independent of the instance and therefore have the same value for all instances of an encoding. 
 
 Before the models were built, feature selection techniques were applied to get a feel which features effect the model the most.
 
 \begin{table}
-	\label{tbl:mlFeat}
 	\center
 	\begin{tabular}{|l|l|l|}
 		\hline
@@ -45,18 +43,21 @@ Before the models were built, feature selection techniques were applied to get a
 		\hline
 	\end{tabular}
 	\caption{Features of the datasets}
+	\label{tbl:mlFeat}
 \end{table}
 
-\subsection{Dominating Set}
-The distribution of the labels can be seen in Figure~\ref{fig:dsLabels}. There are no \lstinline$term$ labels in this dataset since it was used prior for benchmarks and instances with runtime over the time limit where not executed again.
+\subsection{Experiments without \emph{eq}}
+\subsubsection{Dominating Set}
+The distribution of the labels can be seen in Figure~\ref{fig:dsLabelsE1}. There are no \lstinline$term$ labels in this dataset since it was used prior for benchmarks and instances with runtime over the time limit where not executed again.
 \begin{figure}[h]
 	\center
-	\includegraphics[scale=0.4]{figures/domsetLabels.png}
-	\caption{Distribution of labels of Dominating Set\label{fig:dsLabels}}
+	\includegraphics[scale=0.4]{figures/domsetLabelsE1.png}
+	\caption{Distribution of labels of Dominating Set\label{fig:dsLabelsE1}}
 \end{figure}
-\par Three feature selection methods were used on the dataset all yielding the same result that the features \lstinline$defjoin$ and \lstinline$normalization$ are the only features impacting the model significantly. The model was therefore built on those two features as well as on all features.
+\par Three feature selection methods were used on the dataset all yielding the same result that the features \lstinline$defjoin$ and \lstinline$normalization$ are the only features impacting the model significantly in both experiments. The model was therefore built on those two features as well as on all features.
 
-\par The model on all features had a $Precision$\footnote{$Precision=\frac{tp}{tp+fp}$} of $0.39$ and $Recall$\footnote{$Recall=\frac{tp}{tp+fn}$} of $0.41$, yielding a $F_1-score$\footnote{$F_1=2*\frac{precision*recall}{precision+recall}$} of $0.36$. Using only the two aforementioned features resulted in a slightly better model having $Precision=0.4$ and $Recall=0.44$, yielding a $F_1-score$ of $0.41$. The confusion matrix for both models can be seen in Table~\ref{tbl:dsCM}. 
+\par The model on all features had $Precision$\footnote{$Precision=\frac{tp}{tp+fp}$}$=0.39$ and $Recall$\footnote{$Recall=\frac{tp}{tp+fn}$}$=0.41$, yielding $F_1-score$\footnote{$F_1=2*\frac{precision*recall}{precision+recall}$}$=0.36$.
+Using only the two aforementioned features resulted in a slightly better model having $Precision=0.4$ and $Recall=0.44$, yielding $F_1-score=0.41$. The confusion matrix for both models can be seen in Table~\ref{tbl:dsCME1}. 
 \begin{table}[h]
 \center
 	\begin{tabular}{|c|ccccc|ccccc|}
@@ -71,23 +72,23 @@ The distribution of the labels can be seen in Figure~\ref{fig:dsLabels}. There a
 		 \hline
 	\end{tabular}
 	\caption{Confusion Matrix for the Dominating Set dataset}
-	\label{tbl:dsCM}
+	\label{tbl:dsCME1}
 \end{table}
-\par The model using all features overclassifies instances as $3$ (\emph{crafty}), resulting in a high recall of $77.5$ of this label but bad recall for all other labels. The precision however remains fairly balanced throughout the labels. It is interesting to see that both classifiers were not able to label an instance of $2$ (\emph{frumpy}) correctly since there are only very few instances labeled $2$ in the dataset. The classifier on only \lstinline$normalization$ and \lstinline$defjoi$ still leans to overclassifying instances as $3$ but not to the same extent as the model working on all features.
+\par The model using all features overclassifies instances as $3$ (\emph{crafty}), resulting in a high recall of $77.5$ of this label but bad recall for all other labels. The precision however remains fairly balanced throughout the labels. It is interesting to see that both classifiers were not able to label an instance of $2$ (\emph{frumpy}) correctly since there are only very few instances labeled $2$ in the dataset. The classifier on only \lstinline$normalization$ and \lstinline$defjoin$ still leans to overclassifying instances as $3$ but not to the same extent as the model working on all features.
 Therefore it has better precision of $0.62$ and is overall the slightly better classifier.
 
 \subsection{SAT}
-The distribution of the labels of the instances can be seen in Figure~\ref{fig:satLabels}. This dataset contains instances which could not be solved in the specified maximum time in the benchmark, even the majority of the instances belongs to that class. 
+The distribution of the labels of the instances can be seen in Figure~\ref{fig:satLabelsE1}. This dataset contains instances which could not be solved in the specified maximum time in the benchmark, even the majority of the instances belongs to that class. 
 
 \begin{figure}[h]
 	\center
-	\includegraphics[scale=0.4]{figures/satLabels.png}
-	\caption{Labels of SAT\label{fig:satLabels}}
+	\includegraphics[scale=0.4]{figures/satLabelsE1.png}
+	\caption{Labels of SAT\label{fig:satLabelsE1}}
 \end{figure}
 
 \par Again feature selection methods were used to determine the features with the most impact on the result. Interestingly the heuristics determined $dw$ and $nbredgefacts$ to have big impact, $normalization$ to have a little bit of impact and the other features to have very little to no impact on the prediction quality. Therefore models where built using these three features, all features as well as only $dw$.
 
-The model built on all features has $precision=0.409$ and $recall=0.447$, yielding $F_1=0.42$ while the model built on $nomalization$, $dw$ and $nbredgefacts$ has $precision=0.368$ and $recall=0.397$, yielding $F_1 =0.374$. The classifier built of only $dw$ has $precision=0.377$ and recall $F_1=0.414$. According to the $F_1$ score the model on all features and the model built on only $dw$ perform equally, while the model built on the three features predicted best by the feature selection heuristics performs sligthly worse. The confusion matrix for the models can be seen in Table~\ref{tbl:satCM}.
+The model built on all features has $precision=0.409$ and $recall=0.447$, yielding $F_1=0.42$ while the model built on $nomalization$, $dw$ and $nbredgefacts$ has $precision=0.368$ and $recall=0.397$, yielding $F_1 =0.374$. The classifier built of only $dw$ has $precision=0.377$ and recall $F_1=0.414$. According to the $F_1$ score the model on all features and the model built on only $dw$ perform equally, while the model built on the three features predicted best by the feature selection heuristics performs sligthly worse. The confusion matrix for the models can be seen in Table~\ref{tbl:satCME1}.
 
 \begin{table}[h]
 	\center
@@ -102,5 +103,5 @@ The model built on all features has $precision=0.409$ and $recall=0.447$, yieldi
 		\hline
 	\end{tabular}
 	\caption{Confusion Matrix for SAT}
-	\label{tbl:satCM}
+	\label{tbl:satCME1}
 \end{table}

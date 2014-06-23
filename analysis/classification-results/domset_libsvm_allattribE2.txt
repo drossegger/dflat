@@ -1,0 +1,59 @@
+=== Run information ===
+
+Scheme:weka.classifiers.functions.LibSVM -S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -seed 1
+Relation:     whatever-weka.filters.unsupervised.attribute.Remove-R1-2
+Instances:    405
+Attributes:   12
+              gcomponents
+              gnontrivial
+              gpredicates
+              grules
+              gconstraints
+              nbredgefacts
+              nbredgepred
+              defjoin
+              normalization
+              heuristic
+              dw
+              label
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+LibSVM wrapper, original code by Yasser EL-Manzalawy (= WLSVM)
+
+Time taken to build model: 0.09 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         133               32.8395 %
+Incorrectly Classified Instances       272               67.1605 %
+Kappa statistic                          0.0182
+Mean absolute error                      0.2239
+Root mean squared error                  0.4731
+Relative absolute error                 88.1778 %
+Root relative squared error            132.8952 %
+Total Number of Instances              405     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.264     0.281      0.259     0.264     0.261      0.491    1
+                 0.714     0.653      0.366     0.714     0.484      0.531    3
+                 0         0.008      0         0         0          0.496    5
+                 0         0          0         0         0          0.5      2
+                 0.059     0.039      0.235     0.059     0.094      0.51     4
+                 0         0          0         0         0          0.5      6
+Weighted Avg.    0.328     0.309      0.236     0.328     0.254      0.509
+
+=== Confusion Matrix ===
+
+   a   b   c   d   e   f   <-- classified as
+  29  79   0   0   2   0 |   a = 1
+  34 100   1   0   5   0 |   b = 3
+  16  24   0   0   4   0 |   c = 5
+   4  10   0   0   0   0 |   d = 2
+  18  44   2   0   4   0 |   e = 4
+  11  16   0   0   2   0 |   f = 6
+
