@@ -74,6 +74,7 @@ class GringoFeatureExtractor(FeatureExtractor):
 		out=call.communicate()[0]
 		rc=call.returncode
 		if(rc!=0):
+			print out
 			sys.stderr.write("Error: gringo ended with errorcode %d"%rc)
 			sys.exit(1)
 		features=[]

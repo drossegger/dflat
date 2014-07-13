@@ -17,9 +17,10 @@
 		</instance>
 	</instances>-->
 	<instance-group>
-		<program>../dominating_set_benchmark/dominating_set_dynamic.lp</program>
+		<input-file-dir>../finished-tests/instances</input-file-dir>
 		<edge>edge</edge>
-		<instance-file>../dominating_set_benchmark/dominating_set_test.csv</instance-file>
+		<program>../test_encodings/dynamic.lp</program>
+		<exchange>../test_encodings/exchange.lp</exchange>
 		<normalization join-type='default'>semi</normalization>
 		<normalization join-type='extra'>semi</normalization>
 		<normalization join-type='default'>weak</normalization>
