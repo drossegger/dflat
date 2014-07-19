@@ -1,0 +1,14 @@
+$20$ instances of $SAT$ and $81$ instances of $Dominating Set$ have been benchmarked using their respective D-FLAT problem encodings. Each instance has been tested with the available decomposition normalization types $none$, $semi$ and $weak$ normalization. $semi$ and $weak$ normalizations have been run once using D-FLATs $default-join$ and once using the join rules supplied in the encoding. This resulted in $505$ instances.
+
+The benchmarks have been carried out on a machine with $4$ AMD Opteron(tm) $6308$ processors each having $3500 MHz$ and $192GB$ of RAM, however only $1$ core was used.
+
+At first the features~\ref{tbl:mlFeat} of each instance were extracted, then D-FLAT was called for each of the five portfolios using a fixed seed for the decomposition heuristics to ensure integrity of the results.
+Execution was handled using pythons $subprocess$~\cite{www:subprocess} module, the $resource$~\cite{www:resource} module was used to restrict the maximum memory an instance could use to $8 GB$. To get exact runtime results GNU time~\cite{www:time} was used. If a process did not finish after $20$ minutes it was killed and its runtime set to $-100$. $real$, $user$ and $system$ time as put out by GNU time were logged together with the exit code and features of the instance and then saved in csv format. All this was handled by a python testscript which is embedded into the Learner.
+
+\subsection{Instance details}
+The $Dominating Set$ instances were taken from an earlier experiment. Hence the runtime of the instances could be estimated by their runtime in the earlier experiment and instances having too high runtime ($>10$ minutes) were filtered out. Therefore all of these instances finished in time without exceeding the resource limit.
+
+The $SAT$ instances were generated using the generator supplied in the D-FLAT package. Because of the generators randomness the instances were varied, containing unsolvable instances as well as very easy instances solvable in a few milliseconds.
+
+\subsection{Analysis}
+Out of the $100$ SAT instances $19$ had to be terminated because they ran out of time.

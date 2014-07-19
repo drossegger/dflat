@@ -1,0 +1,43 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.CfsSubsetEval 
+Search:weka.attributeSelection.BestFirst -D 1 -N 5
+Relation:     whatever
+Instances:    505
+Attributes:   12
+              gcomponents
+              gnontrivial
+              gpredicates
+              grules
+              gconstraints
+              nbredgefacts
+              nbredgepred
+              defjoin
+              normalization
+              heuristic
+              dw
+              label
+Evaluation mode:evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 69
+	Merit of best subset found:    0.14 
+
+Attribute Subset Evaluator (supervised, Class (nominal): 12 label):
+	CFS Subset Evaluator
+	Including locally predictive attributes
+
+Selected attributes: 1,2,6,11 : 4
+                     gcomponents
+                     gnontrivial
+                     nbredgefacts
+                     dw
+

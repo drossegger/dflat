@@ -1,0 +1,59 @@
+=== Run information ===
+
+Scheme:weka.classifiers.functions.LibSVM -S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -seed 1
+Relation:     whatever
+Instances:    100
+Attributes:   12
+              gcomponents
+              gnontrivial
+              gpredicates
+              grules
+              gconstraints
+              nbredgefacts
+              nbredgepred
+              defjoin
+              normalization
+              heuristic
+              dw
+              label
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+LibSVM wrapper, original code by Yasser EL-Manzalawy (= WLSVM)
+
+Time taken to build model: 0.05 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances          42               42      %
+Incorrectly Classified Instances        58               58      %
+Kappa statistic                          0.0928
+Mean absolute error                      0.1933
+Root mean squared error                  0.4397
+Relative absolute error                 79.5656 %
+Root relative squared error            126.6299 %
+Total Number of Instances              100     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.211     0.16       0.235     0.211     0.222      0.525    0
+                 0.158     0.111      0.25      0.158     0.194      0.523    4
+                 0         0.022      0         0         0          0.489    3
+                 0         0          0         0         0          0.5      2
+                 0.795     0.607      0.507     0.795     0.619      0.594    5
+                 0         0          0         0         0          0.5      1
+Weighted Avg.    0.42      0.321      0.315     0.42      0.352      0.55 
+
+=== Confusion Matrix ===
+
+  a  b  c  d  e  f   <-- classified as
+  4  1  2  0 12  0 |  a = 0
+  4  3  0  0 12  0 |  b = 4
+  3  2  0  0  5  0 |  c = 3
+  1  1  0  0  2  0 |  d = 2
+  4  5  0  0 35  0 |  e = 5
+  1  0  0  0  3  0 |  f = 1
+
