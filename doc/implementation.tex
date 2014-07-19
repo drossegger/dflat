@@ -13,9 +13,9 @@ To the default configuration four different clasp configurations were added usin
 Another new flag \lstinline$--ext-feat$ instructs D-FLAT to stop processing after decomposing the instance and print out its decomposition width in machine readable format. This flag is used for feature extraction. Additional feature extractors can be implemented by writing subclasses of \lstinline$FeatureExtractor$ and adding corresponding instances to the list \lstinline$felist$ in the $Algorithm$ class.
 
 \subsection{Learner}
-Learner is a python script capable of building a learning base for the machine learning as well as performing machine learning algorithms itself. It is configured by command line arguments as well as an xml configuration file. If it is used without any command line arguments it attempts to build a learning base made of instances read from \lstinline$config.xml$. More details will be given in benchmarks~\ref{sec:benchmarks}.
+Learner is a python script capable of building a learning base for machine learning as well as performing machine learning algorithms itself. It is configured by command line arguments as well as an xml configuration file. If it is used without any command line arguments it attempts to build a learning base made of instances read from \lstinline$config.xml$. More details will be given in benchmarks~\ref{sec:benchmarks}.
 
-Usage of the command line flag \lstinline$-p$ or \lstinline$--predict$ together with an instance as well as problem encoding and a learning base will launch in Learner in prediction mode. It will try to predict the best solver configuration based on the supplied learning base and launch D-FLAT with the predicted config. Using $--help$ gives the full list of commands, which can also be seen in Listing~\ref{lst:learnercmd}.
+Usage of the command line flag \lstinline$-p$ or \lstinline$--predict$ together with an instance as well as problem encoding and a learning base will launch Learner in prediction mode. It will try to predict the best solver configuration based on the supplied learning base and launch D-FLAT with the predicted config. Using $--help$ gives the full list of commands, which can also be seen in Listing~\ref{lst:learnercmd}.
 \begin{lstlisting}[label=lst:learnercmd]
 TODO
 \end{lstlisting}
