@@ -1,0 +1,5 @@
+The first idea was to perform the algorithm selection at every clasp call made by D-FLAT but since this calls contain mostly small instances which can be solved in a few milliseconds it is probable that the algorithm selection would cause too much overhead, therefore not increasing the performance.
+
+The approach used in this project analyses the main problem by looking mainly at features of the ungrounded instance, then selects the best configuration based on this features and uses this configuration for all clasp calls.
+
+Clearly the first approach works better if implemented efficiently. While it would be interesting to experiment with this implementation it would go far beyond the scope of this project and therefore the less complicated approach was chosen.

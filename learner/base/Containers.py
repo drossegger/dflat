@@ -18,4 +18,12 @@ class Instance:
 		self.exitcodes=[]
 		self.edges=[]
 
+class Feature:
+	name=''
+	nominal=False	
+	column=0
+	def __init__(self,name,nominal):
+		self.name=name
+		self.nominal=nominal
 
+	

@@ -8,15 +8,66 @@ To help D-FLAT profit from machine learning techniques an architecture based on 
 A python script was implemented to handle the control flow such that the user only has to supply the instance and learning database. Furthermore some modifications to D-FLAT were made to allow the configuration of the solver.
 
 \subsection{Modifications to D-FLAT}
-To the default configuration four different clasp configurations were added using \lstinline$clasp_fascade$ of its library. The three configurations \emph{jumpy},\emph{frumpy},\emph{crafty} aim to rebuild the portfolios provided by clasp, while \emph{nopre} instructs clasp to skip any preprocessing and start solving directly. These configurations where added to the \lstinline$Asp$ class in D-FLAT. Users can set the desired portfolio by using the \lstinline$--portfolio$ flag followed by the name of the portfolio in the command line arguments.
+To the default configuration four different clasp configurations were added using \lstinline$clasp_fascade$ of its library. The three configurations \emph{jumpy},\emph{frumpy},\emph{crafty} aim to copy the portfolios provided by clasp, while \emph{nopre} instructs clasp to skip any preprocessing and start solving directly. These configurations where added to the \lstinline$Asp$ class in D-FLAT. Users can set the desired portfolio by using the \lstinline$--portfolio$ flag followed by the name of the portfolio in the command line arguments.
 
 Another new flag \lstinline$--ext-feat$ instructs D-FLAT to stop processing after decomposing the instance and print out its decomposition width in machine readable format. This flag is used for feature extraction. Additional feature extractors can be implemented by writing subclasses of \lstinline$FeatureExtractor$ and adding corresponding instances to the list \lstinline$felist$ in the $Algorithm$ class.
+\subsection{Feature Extraction}
+Apart from features extractable from D-FLAT also features from other sources are used. Features of the encoding are extracted using \lstinline$gringos$ \lstinline$--gstats$ flag and some features are extracted directly from the instance file. A complete list of available features can be seen in Table~\ref{tbl:feat}.
+
+\begin{table}
+	\center
+	\begin{tabular}{|l|l|l|}
+		\hline
+		Name & Description & Origin \\
+		\hline
+		\lstinline$gcomponents$ & number of components\footnote{$function symbols+ predicate symbols$} & gringo\\ %TODO Fix footnote
+		\lstinline$gnontrivial$ & number of nontrivial components & gringo\\
+		\lstinline$gpredicates$ & number of predicates & gringo \\
+		\lstinline$gconstraints$ & number of constraints & gringo\\
+		\lstinline$nbredgefacts$ & number of edge facts & instance file\\
+		\lstinline$nbredgepred$ & number of edge predicates & user \\
+		\lstinline$defjoin$ & $1$ if D-FLATs default join was used, $0$ otherwise & user\\
+		\lstinline$normalization$ & the normalization used (non, semi, normalized) & user\\
+		\lstinline$heuristic$ & the heuristic used to create the tree decomposition & user\\
+		\lstinline$dw$ & the decomposition width of the tree decomposition & D-FLAT\\
+		\hline
+	\end{tabular}
+	\caption{Features of the datasets}
+	\label{tbl:feat}
+\end{table}
+The feature extraction is handled by the python script \emph{Learner}.
 
 \subsection{Learner}
-Learner is a python script capable of building a learning base for machine learning as well as performing machine learning algorithms itself. It is configured by command line arguments as well as an xml configuration file. If it is used without any command line arguments it attempts to build a learning base made of instances read from \lstinline$config.xml$. More details will be given in benchmarks~\ref{sec:benchmarks}.
+The program \emph{Learner} has been developed to handle all machine learning related tasks. \emph{Learner} supports $3$ subcommands \lstinline$learn, genmod$ and \lstinline$solve$. 
+\lstinline$learn$ instructs \lstinline$learner$ to build the learning base or training set as it is often called and save it in $csv$ style. 
+\lstinline$genmod$ generates a Support Vector Machine model based on the training set and \lstinline$solve$ is used to actually solve instances. Detailed information on the different subtools is given in the following subsections.
 
-Usage of the command line flag \lstinline$-p$ or \lstinline$--predict$ together with an instance as well as problem encoding and a learning base will launch Learner in prediction mode. It will try to predict the best solver configuration based on the supplied learning base and launch D-FLAT with the predicted config. Using $--help$ gives the full list of commands, which can also be seen in Listing~\ref{lst:learnercmd}.
-\begin{lstlisting}[label=lst:learnercmd]
-TODO
-\end{lstlisting}
+Basic configuration of \emph{Learner} is done with the \lstinline$config.xml$ file in its main directory. For further detail on the configuration look at the example provided in the distribution. Table~\ref{tbl:req} shows \emph{Learners} system requirements.
+
+\begin{table}[h]
+	\center
+	\begin{tabular}{ll}
+		Requirement & Version\\
+		python & $\geq2.7$\\
+		gringo & $\geq3.0$\\
+		scikit-learn & $\geq0.10$\\
+		D-FLAT learn & $\geq0.01$
+	\end{tabular}
+	\caption{Learner system requirements \label{tbl:req}}
+\end{table}
+
+\paragraph{\lstinline$learn$}
+It is encouraged to use \lstinline$learn$ to build training sets. For every instance provided in the \lstinline$config.xml$ \emph{Learner} first extracts the features of the instance. Then it calls D-FLAT with each portfolio and measures the runtime using \lstinline$time$~\cite{www:time}.
+Using the flags \lstinline$--mtime$ and \lstinline$--reslimit$ the execution time and resource usage can be limited for the processes. If one of these limits is reached \emph{Learner} kills the instance and reports $-100$ as runtime, telling that this instance was not solvable with the respective portfolio. It then writes all features and runtimes to a file, the destination of this file can be specified using \lstinline$--learningbase$, as default \lstinline$learningbase.csv$ is used. The learning base can be used to build the machine learning model using \lstinline$genmod$.
+
+\paragraph{\lstinline$genmod$}
+Invoking this command tells \emph{Learner} to build a model of the learningbase specified by the flag \lstinline$--learningbase$. Support Vector Machines as implemented by scikit-learn~\cite{www:scikit} are used as classifier. Numerical features are scaled such that they have $0$ mean and unit variance using scikit-learns \lstinline$StandardScaler$. 
+Nominal features are encoded using $1-of-K$ encoding, i.e. for $K$ different values each value is represented by a binary vector of $K$ length where exactly $1$ bit has the value $1$ and all others $0$.
+After this preprocessing steps the model is fitted to the learningbase and saved to \lstinline$default.mod$, to choose a different location \lstinline$--model$ can be used.
+
+\paragraph{\lstinline$solve$}
+is used to solve instances with the best portfolio predicted by the model generated by \lstinline$genmod$. The model is specified using \lstinline$--model$, \lstinline$-e$ is used to specify the edge predicates, other arguments for D-FLAT can be specified as string using \lstinline$--arg$.
+\lstinline$Learner$ then predicts the best portfolio based on the specified model and launches D-FLAT with it. Any output generated by D-FLAT is shown in the command line.
+
+
 

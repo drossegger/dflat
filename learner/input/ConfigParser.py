@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import sys,os
 from base.Containers import Instance 
+from base.Containers import Feature
 from input.TextReader import InstanceReader
 
 class ConfigParser:
@@ -75,7 +76,7 @@ class ConfigParser:
 	def getFeatures(self): 
 		xmlFeatures=self.root.find('features') 
 		if(xmlFeatures != None): 
-			self.features = [feature.attrib.get('name') for feature in xmlFeatures.iter('feature')] 
+			self.features = [Feature(feature.attrib.get('name'),True if feature.attrib.get('nominal')=='1' else False) for feature in xmlFeatures.iter('feature')] 
 			
 	def getDFLATPath(self): 
 		self.dflat = self.root.find('dflat').text

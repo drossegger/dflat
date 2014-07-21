@@ -14,15 +14,21 @@
 \end{minipage}
 \begin{minipage}{0.4\textwidth}
 	\begin{flushright} \large
-		\emph{Supervisor:} \\
-		Stephan \textsc{Woltran} % Supervisor's Name
+		\emph{Supervisors:} \\
 	\end{flushright}
 \end{minipage}\\[4cm]
 {\large \today}\\[2cm]
 \end{titlepage}
 
 \section{Introduction}
-\section{Motivation}
+The D-FLAT project, developed by the DBAI group of TU Vienna, makes use of problem structure to solve reasoning problems with the help of Answer Set Programming.
+It uses \emph{tree decompositions} to decompose the problem into smaller subproblems and then uses traditional ASP solvers to solve the subproblems, combining the solutions until a solution for the whole problem is obtained.
+
+D-FLAT uses clasp as ASP solver. clasp is a powerful solver offering vast possibilities to optimize its performance. While the default configuration is robust for most problems, it is the case that for some problems, different configurations perform better. Identifying those problems by hand is tedious and most of the time not desirable, therefore claspfolio was developed whichuses algorithm selection techniques to automatically select promising configurations. This resulted in a huge performance gain, allowing claspfolio to outperform traditional ASP solvers.
+
+The goal of the project was to apply algorithm selection techniques for clasp as used in claspfolio to see how this affects the performance of D-FLAT. Since D-FLAT only uses clasp to solve subproblems it was not clear how algorithm selection techniques affect its performance.
+\section{Design}
+\input{design}
 \section{Implementation}
 \label{sec:impl}
 \input{implementation}
