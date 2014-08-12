@@ -23,8 +23,8 @@ class LBReader(TextReader):
 		portfolios=[]
 		tablestructure=self._buildTable(instances[0])
 		for instance in instances:
-			features.append(self._convertFeatures(instance[2]),tablestructure[0])
-			portfolios.append(self._convertPortfolios(instance[3]),tablestructur[1])
+			features.append(self._convertFeatures(instance[2],tablestructure[0]))
+			portfolios.append(self._convertPortfolios(instance[3],tablestructure[1]))
 		
 		return [features,portfolios]
 			
@@ -47,18 +47,18 @@ class LBReader(TextReader):
 
 	def _convertPortfolios(self,portfolios,tableStructure):
 		portfolios=ast.literal_eval('({0})'.format(portfolios))
-		a=[None]*length(tableStructure)
+		a=[None]*len(tableStructure)
 		for portfolio in portfolios:
 			if portfolio[1]=='real':
-				for i in range(length(tableStructure)):
+				for i in range(len(tableStructure)):
 					if tableStructure[i]==portfolio[0]:
 						a[i]=portfolio[2]
 		return a
 	def _convertFeatures(self,features,tableStructure):
 		features=ast.literal_eval('({0})'.format(features))
-		a=[None]*length(tableStructure)
+		a=[None]*len(tableStructure)
 		for feature in features:
-			for i in range(length(tableStructure)):
+			for i in range(len(tableStructure)):
 				if feature[0]=='dw':
 					if tableStructure[i]=='dw':
 						a[i]=feature[1]
@@ -72,17 +72,21 @@ class LBReader(TextReader):
 		
 		fTable=[]
 		pTable=[]
-		for i in range(length(features)):
+		ignore=0
+		for i in range(len(features)):
 			if features[i][0]=='dw':
 				fTable.append(features[i][0])
 				for feature in self.features:
 					if feature.name==features[i][0]:
 						feature.column=i
 			else:
-				fTable.append(features[i][1])
+				bef=len(fTable)
 				for feature in self.features:
 					if feature.name==features[i][1]:
-						feature.column=i
+						feature.column=i-ignore
+						fTable.append(features[i][1])
+				aft=len(fTable)
+				if aft==bef: ignore+=1
 		for portfolio in portfolios:
 			if portfolio[1]=='real':	
 				pTable.append(portfolio[0])

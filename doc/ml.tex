@@ -1,12 +1,12 @@
-Classification experiments where carried out to test if the data retrieved in the benchmarks lends itself to classification. The experiments where carried out using WEKA~\cite{WEKA}, as classifier support vectore machines where used through the \lstinline$libsvm$ package available for all major operating systems. The classifier was tested using $10$-fold cross validation on the \emph{Dominating Set} and \emph{SAT} dataset obtained from the benchmarks seperatly as well as both datasets joined. The data was labeled with numbers $0-6$ for the fastest portfolio according to the \emph{user} time from the benchmarks.
-The labels together with its portfolio can be seen in Table~\ref{tbl:mlLabel}. The experiments have been performed on the data with and without the label $6$, \emph{eq} which says that the runtimes were equal for all instances. For the experiments without the \emph{eq} label the instances with equal runtimes have been labelled $5$. The label $0$, \emph{not solved} is assigned if no portfolio could solve the instance in the given time or resource limit.
+Classification experiments were carried out to test if the data retrieved in the benchmarks lends itself to classification. The experiments where carried out using WEKA~\cite{WEKA}, as classifier support vectore machines where used through the \inline$libsvm$ package available for all major operating systems. The classifier was tested using $10$-fold cross validation on the {Dominating Set} and {SAT} dataset obtained from the benchmarks separately as well as both datasets joined. The data was labeled with numbers $0-6$ for the fastest portfolio according to the {user} time from the benchmarks.
+The labels together with their portfolio can be seen in Table~\ref{tbl:mlLabel}. The experiments have been performed on the data with and without the label $6$, \inline$eq$, which says that the runtimes were equal for all instances. For the experiments without the \inline$eq$ label the instances with equal runtimes have been labeled $5$. The label $0$, \inline$term$, is assigned if no portfolio could solve the instance in the given time or resource limit.  
 \begin{table}[h]
 	\center
 	\begin{tabular}{|r|l|}
 		\hline
 		Label & Portfolio\\
 		\hline
-		0 & not solved\footnote{The instance was not solved by any portfolio in the given time limit} \\ %TODO Fix footnote
+		0 & term\\
 		1 & jumpy\\
 		2 & frumpy\\
 		3 & crafty\\
@@ -20,22 +20,22 @@ The labels together with its portfolio can be seen in Table~\ref{tbl:mlLabel}. T
 \end{table}
 
 
-\par $11$ features were used in the classification experiments. The features and their origin can be seen in Table~\ref{tbl:feat}, details about the extraction can be found in Section~\ref{sec:impl}. Features tagged with \emph{user} are features usually supplied by the user when executing D-FLAT, the number of edge facts is counted in the input file and features tagged $gringo$ are features of the non-ground instance. They are also independent of the instance and therefore have the same value for all instances of an encoding. 
+\par $11$ features were used in the classification experiments. The features and their origin can be seen in Table~\ref{tbl:feat}, details about the extraction can be found in Section~\ref{sec:impl}. Features tagged with \inline{user} are features usually supplied by the user when executing \mbox{D-FLAT}, the number of edge facts is counted in the input file and features tagged \inline$gringo$ are features of the non-ground encoding. They are also independent of the instance and therefore have the same value for all instances of an encoding. 
 
-Before the models were built, feature selection techniques were applied to get a feel which features effect the model the most.
+Before the models were built, feature selection techniques were applied to see which features will probably affect the model the most.
 
-\subsection{Experiments without \emph{eq}}
+\subsection{Experiments without \inline$eq$}
 \subsubsection{Dominating Set}
-The distribution of the labels can be seen in Figure~\ref{fig:dsLabelsE1}. There are no $term$ labels in this dataset since it was used prior for benchmarks and instances with runtime over the time limit where not executed again.
+The distribution of the labels can be seen in Figure~\ref{fig:dsLabelsE1}. There are no \inline$term$ labels in this dataset since it was used prior for benchmarks and instances with runtime over the time limit were not executed again.
 \begin{figure}[h]
 	\center
-	\includegraphics[scale=0.4]{figures/domsetLabelsE1.png}
+	\includegraphics[scale=\figscale]{figures/domsetLabelsE1.png}
 	\caption{Distribution of labels of Dominating Set\label{fig:dsLabelsE1}}
 \end{figure}
-\par Three feature selection methods were used on the dataset all yielding the same result that the feature \lstinline$normalization$ is the only features impacting the model significantly. The model was therefore built on this feature as well as on all features.
+\par Three feature selection methods were used on the dataset all yielding the same result that the feature \inline$normalization$ is the only feature impacting the model significantly. The model was therefore built on this feature as well as on all features available which can be seen in Table~\ref{tbl:feat}.
 
-\par The model on all features had $Precision$\footnote{$Precision=\frac{tp}{tp+fp}$}$=0.44$ and $Recall$\footnote{$Recall=\frac{tp}{tp+fn}$}$=0.46$, yielding $F_1-score$\footnote{$F_1=2*\frac{precision*recall}{precision+recall}$}$=0.45$.
-Using only \lstinline$normalization$ resulted in a slightly worse model having $Precision=0.43$ and $Recall=0.47$, yielding $F_1-score=0.42$. The confusion matrix for both models can be seen in Table~\ref{tbl:dsCME1}. 
+\par The model on all features had $Precision=0.44$ ($Precision=\frac{tp}{tp+fp}$) and $Recall=0.46$ ($Recall=\frac{tp}{tp+fn}$), yielding $F_1-score=0.45$ ($F_1=2*\frac{precision*recall}{precision+recall}$).
+Using only \inline$normalization$ resulted in a slightly worse model having $Precision=0.43$ and $Recall=0.47$, yielding $F_1-score=0.42$. The confusion matrix for both models can be seen in Table~\ref{tbl:dsCME1}. 
 \begin{table}[h]
 \center
 	\begin{tabular}{|c|ccccc|ccccc|}
@@ -53,24 +53,26 @@ Using only \lstinline$normalization$ resulted in a slightly worse model having $
 	\label{tbl:dsCME1}
 \end{table}
 
-Both models tend to label instances as \emph{jumpy}, the one with all features does slightly better than the one on only \lstinline$normalization$ although the feature selection heuristics stated that no other feature but \lstinline$normalization$ has any impact.
+Both models tend to label instances as \inline$jumpy$, the one with all features does slightly better than the one on only \inline$normalization$ although the feature selection heuristics stated that no other feature but \inline$normalization$ has any impact.
 
-Overall the classifier on all features classified $74$ of $162$ instances correctly while the classifer built only on \lstinline$normalization$ labeled $76$ correctly. This is not a good result since choosing one of the labels \lstinline$jumpy$ or \lstinline$crafty$ randomly would give better results.
+Overall the classifier on all features classified $74$ of $162$ instances correctly while the classifer built only on \inline$normalization$ labeled $76$ correctly. This is not a good result since choosing one of the labels \inline$jumpy$ or \inline$crafty$ randomly would give better results.
 
 \subsubsection{SAT}
 The distribution of the labels of the instances can be seen in Figure~\ref{fig:satLabelsE1}. This dataset contains instances which could not be solved in the specified maximum time in the benchmark, even the majority of the instances belongs to that class. 
 
 \begin{figure}[h]
 	\center
-	\includegraphics[scale=0.4]{figures/satLabels.png}
+	\includegraphics[scale=\figscale]{figures/satLabels.png}
 	\caption{Labels of SAT\label{fig:satLabelsE1}}
 \end{figure}
 
-\par Again feature selection methods were used to determine the features with the most impact on the result. Interestingly the heuristics determined $dw$ and $nbredgefacts$ to have big impact, $normalization$ and $defjoin$ to have a little bit of impact and the other features to have very little to no impact on the prediction quality. Therefore models where built using these four features, all features  and only $dw$,$nbredgefacts$.
+Again feature selection methods were used to determine the features with the most impact on the result. Interestingly the heuristics determined \inline$dw$ and \inline$nbredgefacts$ to have big impact, \inline$normalization$ and \inline$defjoin$ to have a little bit of impact and the other features to have very little to no impact on the prediction quality. Therefore models where built using these four features, all features  and only \inline$dw$,\inline$nbredgefacts$.
 
-The model built on all features has $precision=0.32$ and $recall=0.42$, yielding $F_1=0.35$ while the model built on $nomalization$, $dw$, $nbredgefacts$ and $defjoin$ has $precision=0.31$ and $recall=0.41$, yielding $F_1 =0.35$. The classifier built of only $dw$ and $nbredgefacts$ has $precision=0.32$ and recall $F_1=0.42$. According to the $F_1$ score the model on all features and the model built on only $dw$ and $nbredgefacts$ perform equally, while the model built on the four features predicted best by the feature selection heuristics performs sligthly worse. Looking at the correctly classified instances this effect can be seen too. The models on all features and on $dw$ and $nbredgefacts$ classified $42$ ($42\%$) correctly, while the model on four features classified $41$ ($41\%$) instances correctly. The confusion matrix for the models can be seen in Table~\ref{tbl:satCME1}.
+The model built on all features has $precision=0.32$ and $recall=0.42$, yielding $F_1=0.35$ while the model built on \inline$nomalization$, \inline$dw$, \inline$nbredgefacts$ and \inline$defjoin$ has $precision=0.31$ and $recall=0.41$, yielding $F_1 =0.35$. The classifier built of only \inline$dw$ and \inline$nbredgefacts$ has $precision=0.32$ and recall $F_1=0.42$.
 
-\begin{table}[h]
+According to the $F_1$ score the model on all features and the model built on only $dw$ and $nbredgefacts$ perform equally, while the model built on the four features predicted best by the feature selection heuristics performs sligthly worse. Looking at the correctly classified instances this effect can be seen too. The models on all features and on \inline$dw$ and \inline$nbredgefacts$ classified $42$ ($42\%$) correctly, while the model on four features classified $41$ ($41\%$) instances correctly. The confusion matrix for the models can be seen in Table~\ref{tbl:satCME1}.
+
+\begin{table}
 	\center
 	\begin{tabular}{|c|cccccc|cccccc|cccccc|}
 		\hline\multicolumn{7}{|c|}{All Attributes} &\multicolumn{6}{|c|}{$4$ attributes}&\multicolumn{6}{|c|}{dw, nbredgefacts}\\
@@ -86,10 +88,11 @@ The model built on all features has $precision=0.32$ and $recall=0.42$, yielding
 	\caption{Confusion Matrix for SAT}
 	\label{tbl:satCME1}
 \end{table}
+
 \subsubsection{All Instances}
 The experiments in this section are the most meaningful since they work with the data from both benchmarks. The input data was obtained by combining the data from both benchmarks.
 
-Again feature selection heuristics were used on the dataset, selecting a subset of $5$ features, \lstinline$nbredgepred$, \lstinline$dw$, \lstinline$nbredgefacts$ and \lstinline$defjoin$ and \lstinline$normalization$ as impactful features. Therefore the model was built once on all features, once on the $5$ selected features and once only on \lstinline$nbredgepred$.
+Again feature selection heuristics were used on the dataset, selecting a subset of $5$ features, \inline$nbredgepred$, \inline$dw$, \inline$nbredgefacts$ and \inline$defjoin$ and \inline$normalization$ as impactful features. Therefore the model was built once on all features, once on the $5$ selected features and once only on \inline$nbredgepred$.
 
 The two model performed equally well regarding the characteristics, having $precision=0.40$ and $recall=0.41$, yielding $F_1=0.39$. Both models were able to classify $40.5\%$ of the instances correctly. The confusion matrix of both models can be seen in Table~\ref{tbl:cmbCM}.
 
@@ -110,14 +113,15 @@ $5$&$3$&$6$&$0$&$7$&$0$&$30$&$4$&$6$&$0$&$6$&$0$&$30$\\
 	\label{tbl:cmbCM}
 \end{table}
 
-\subsection{Experiments with $eq$}
-For $Sat$ $39$ instances and for $Dominating Set$ no instances wer labelled $eq$. We found it interesting to see how labeling instances where all portfolios have the same runtimes with one of the portfolios affects the model. Therefore the same experiments as in the above section where done, labeling instances with equal runtimes with a new label $eq$ instead of labeling them $nopre$. We expected the models to be better using this technique since we thought that labeling all the instances labeled $eq$ with $nopre$ might bias the model.
 
-Surprisingly the models built with label $eq$ performed much worse than the ones without it, not exceeding $precision$ of $0.3$ and $recall$ of $0.35$, and unable to correctly classify most instances. Not more than $35\%$ of the instances were classified correctly in all experiments.
+\subsection{Experiments with \inline$eq$}
+For SAT $39$ instances and for Dominating Set no instances were labeled \inline$eq$. We found it interesting to see how labeling instances where all portfolios have the same runtimes with one of the portfolios affects the model. Therefore the same experiments as in the above section were done, labeling instances with equal runtimes with a new label \inline$eq$ instead of labeling them \inline$nopre$. We expected the models to be better using this technique since we thought that labeling all the instances labeled \inline$eq$ with \inline$nopre$ might bias the model.
 
-\subsection{Conclusion}
-While the model for the combined instances does not seem to good considering it only classified $42\%$ of the instances correctly, one should not be disillusioned by it. For most instances the difference in runtimes of the portfolios was only marginally. Therefore classifying an instance wrong wont affect the runtime too much in most cases. 
-Furthermore the model was built on only $505$ instances, it is expected that the quality of the model increases with the size of the learning base.
+Surprisingly the models built with label \inline$eq$ performed much worse than the ones without it, not exceeding $precision$ of $0.3$ and $recall$ of $0.35$, and unable to correctly classify most instances. Not more than $35\%$ of the instances were classified correctly in all experiments.
 
-It would be interesting to see if the models classify correctly on instances where one of the portfolio was a lot faster than the others but to test this bigger test sets would be needed. Also a classifier built on only those instances could yield interesting results but to get enough data extensive benchmarking would be needed which would break the scope of this project.
+%\subsection{Conclusion}
+%While the model for the combined instances does not seem to good considering it only classified $42\%$ of the instances correctly, one should not be disillusioned by it. For most instances the difference in runtimes of the portfolios was only marginally. Therefore classifying an instance wrong wont affect the runtime too much in most cases. 
+%Furthermore the model was built on only $505$ instances, it is expected that the quality of the model increases with the size of the learning base.
+
+%It would be interesting to see if the models classify correctly on instances where one of the portfolio was a lot faster than the others but to test this bigger test sets would be needed. Also a classifier built on only those instances could yield interesting results but to get enough data extensive benchmarking would be needed which would break the scope of this project.
 

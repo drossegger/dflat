@@ -28,7 +28,12 @@
 		<normalization>none</normalization>
 	</instance-group>
 	<features>
-		<feature name='tw' size='1' />
-		<feature name='nor' />
+		<feature name="dw" nominal="0" />
+		<feature name="nbredgepred" nominal="0" />
+		<feature name="nbredgefacts" nominal="0" />
+		<feature name="gconstraints" nominal="0" />
+		<feature name="gpredicates" nominal="0" />
+		<feature name="gnontrivial" nominal="0" />
+		<feature name="gcomponents" nominal="0" />
 	</features>
 </config>

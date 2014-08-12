@@ -1,28 +1,42 @@
-$20$ instances of $SAT$ and $81$ instances of $Dominating Set$ have been benchmarked using their respective D-FLAT problem encodings. Each instance has been tested with the available decomposition normalization types $none$, $semi$ and $weak$ normalization. $semi$ and $weak$ normalizations have been run once using D-FLATs $default-join$ and once using the join rules supplied in the encoding. This resulted in $505$ instances.
+$20$ instances of SAT and $81$ instances of Dominating Set have been benchmarked using their respective \mbox{D-FLAT} problem encodings. SAT instances have been tested with the available decomposition normalization types none, semi and weak normalization. Semi and weak normalizations have been run once using \mbox{D-FLAT}'s default-join and once using the join rules supplied in the encoding. 
+Since the encoding did not support default-join, Dominating Set instances have been tested only with semi and weak normalization without default-join. This resulted in $266$ instances.
 
-The benchmarks have been carried out on a machine with $4$ AMD Opteron(tm) $6308$ processors each having $3500 MHz$ and $192GB$ of RAM, however only $1$ core was used.
+The benchmarks have been carried out on a machine with $4$ AMD Opteron $6308$ processors each having $3500$ $MHz$ and $192$ $GB$ of RAM, however only $1$ core was used.
 
-At first the features~\ref{tbl:feat} of each instance were extracted, then D-FLAT was called for each of the five portfolios using a fixed seed for the decomposition heuristics to ensure integrity of the results.
-Execution was handled using pythons $subprocess$~\cite{www:subprocess} module, the $resource$~\cite{www:resource} module was used to restrict the maximum memory an instance could use to $8 GB$. To get exact runtime results GNU time~\cite{www:time} was used. If a process did not finish after $20$ minutes it was killed and its runtime set to $-100$. $real$, $user$ and $system$ time as put out by GNU time were logged together with the exit code and features of the instance and then saved in csv format. All this was handled by a python testscript which is embedded into Learner.
+At first the features of each instance were extracted, then \mbox{D-FLAT} was called for each of the five portfolios using a fixed seed for the decomposition heuristics to ensure integrity of the results.
+Execution was handled by the \inline$learn$ subcommand of \inline$Learner$ using Pythons subprocess module~\cite{www:subprocess}, the resource module~\cite{www:resource} was used to restrict the maximum memory an instance could use to $24$ $GB$. To get exact runtime results GNU time~\cite{www:time} was used. If a process did not finish after $40$ minutes it was killed and its runtime set to $-100$. Real, user and system time as reported by GNU time were logged together with the exit code and features of the instance and then saved in \inline$csv$ format.
 
 \subsection{Instance details}
-The $Dominating Set$ instances were taken from an earlier experiment. Hence the runtime of the instances could be estimated by their runtime in the earlier experiment and instances having too high runtime ($>10$ minutes) were filtered out. Therefore all of these instances finished in time without exceeding the resource limit.
+The Dominating Set instances were taken from an earlier experiment. Hence the runtime of the instances could be estimated by their runtime in this experiment and instances having too high runtime ($>10$ minutes) were filtered out. Therefore all of these instances finished in time without exceeding the resource limit.
 
-The $SAT$ instances were generated using the generator supplied in the D-FLAT package. Because of the generators randomness the instances were varied, containing unsolvable instances as well as very easy instances solvable in a few milliseconds.
+The SAT instances were generated using the generator supplied in the \mbox{D-FLAT} package. Because of the generators randomness the instances were varied, containing unsolvable instances as well as very easy instances solvable in a few milliseconds.
 
 \subsection{Analysis}
-Out of the $100$ SAT instances $19$ had to be terminated because they ran out of time.
+Out of the $100$ SAT instances $19$ had to be terminated because they ran out of time. The distribution of runtimes can be seen in Figure~\ref{fig:runtime}.
 
-The most improved runtime compared to the unconfigured solver, was achieved in a $SAT$ instance where the portfolio $crafty$ was $2.29$ as fast. On average the unconfigured solver was $5\%$ slower than the best portfolio, having a median of $1.8\%$. The characteristics of the two encodings alone do not differ from the overall characteristics. A summary of the characteristics is given in Table~\ref{tbl:charcmp}.
+\begin{figure}[h]
+	\center
+	\includegraphics[scale=\figscale]{figures/runtime.png}
+	\caption{Distribution of the runtime of the benchmarks\label{fig:runtime}}
+\end{figure}
+
+The most improved runtime compared to the unconfigured solver, was achieved in a SAT instance where the portfolio \inline$crafty$ was $2.29$ times faster. On average the unconfigured solver was $7.4\%$ slower than the best portfolio, having a median of $3.9\%$. A summary of the characteristics is given in Table~\ref{tbl:charcmp}.
 
 \begin{table}[h]
 	\center
 	\begin{tabular}{c|c|c|c|c|c}
 		Min. & $1^{st}$ Quartile & Median & Mean & $3^{rd}$ Quartile & Max. \\
 		\hline
-		$1.000$&$1.000$&$1.018$&$1.056$&$1.047$ &$2.290$
+		$1.000$&$1.005$&$1.039$&$1.074$&$1.082$ &$2.290$
 	\end{tabular}
-	\caption{Characteristics of the unconfigured solver\label{tbl:charcmp}}
+	\caption{Characteristics of the unconfigured solver compatred to the best configuration\label{tbl:charcmp}}
 \end{table}
 
-The runtime distribution of the benchmarks can be seen in Figure%~\ref{fig:runtime}
+\begin{figure}[h]
+	\center
+	\includegraphics[scale=\figscale]{figures/relativePerformance.png}
+	\caption{Performance of \inline$clasp$ without portfolio in comparison to the fastest portfolio\label{fig:perf}}
+\end{figure}
+
+The performance of the standard configuration of \inline$clasp$ in comparison to other portfolios can be seen in Figure~\ref{fig:perf}. The figures are obtained by dividing the runtime of the default configuration by the runtime of the fastest portfolio.
+Interestingly for Dominating Set other portfolios were clearly better the majority of times while for SAT a difference between the standard configuration and any portfolio seems marginal except for some extreme outliers.

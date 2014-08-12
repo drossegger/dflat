@@ -49,9 +49,9 @@ class DynamicFeatureExtractor(FeatureExtractor):
 		lines = lines.group(2).splitlines()
 		lines = [x.split(';') for x in lines]
 		if checker==False:
-			return [(x[0],-1) for x in lines]
+			return [(-1,x[0]) for x in lines]
 		else:
-			return [(x[0],float(x[1])) for x in lines]
+			return [(float(x[1]),x[0]) for x in lines]
 
 class GringoFeatureExtractor(FeatureExtractor):
 	def __init__(self, gringo,instances):

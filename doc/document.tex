@@ -1,8 +1,21 @@
 \include{preamble}
 \begin{document}
+\newcommand{\figscale}{.6}
+\def\inline{\lstinline[basicstyle=\ttfamily]}
+\newenvironment{comment}{
+	\ifdraft
+	\color{blue}
+	\begin{textit}
+	/*}
+	{
+		*/\end{textit}
+	\fi
+	}
+\newif\ifdraft
+\drafttrue
 \begin{titlepage}
 \center
-\textsc{\LARGE{Different clasp configurations in D-FLAT}}\\[1.5cm]
+\textsc{\LARGE{Different \inline$clasp$ configurations in \mbox{D-FLAT}}}\\[1.5cm]
 \textsc{\large{Project Report}}\\[1cm]
 \textsc{\large{database and artificial intelligence group}}\\
 \textsc{\large{Faculty of Informatics, TU Vienna}}\\[1.5cm]
@@ -15,18 +28,27 @@
 \begin{minipage}{0.4\textwidth}
 	\begin{flushright} \large
 		\emph{Supervisors:} \\
+		Stefan \textsc{Woltran}
 	\end{flushright}
 \end{minipage}\\[4cm]
 {\large \today}\\[2cm]
+\begin{abstract}
+D-FLAT, developed by the Database and Artificial Intelligence group of Technical University Vienna uses Answer Set Programming and tree decompositions to solve computational problems. The ASP solver \inline$clasp$ is used to compute solutions of the subproblems represented by nodes in the tree decomposition. \inline$clasp$ offers a variety of configuration options to enhance its performance. The goal of the project was to investigate how tuning of \inline$clasp$ impacts the overall performance of \mbox{D-FLAT} and to use machine learning techniques to select the best configuration based on a variety of instance features. In addition to implementation of various machine learning techniques, benchmarks and machine learning experiments have been done to get an impression of the possibilities machine learning techniques give in this environment.
+
+Benchmarks showed that tuning of \inline$clasp$ indeed has an impact on the performance of \mbox{D-FLAT}. The experiments together with the benchmarks furthermore showed that the use of machine learning techniques benefit \mbox{D-FLAT} but that careful selection of features and 
+implementation are necessary to obtain good results.
+\end{abstract}
 \end{titlepage}
-
+\newpage
+\tableofcontents
+\newpage
 \section{Introduction}
-The D-FLAT project, developed by the DBAI group of TU Vienna, makes use of problem structure to solve reasoning problems with the help of Answer Set Programming.
-It uses \emph{tree decompositions} to decompose the problem into smaller subproblems and then uses traditional ASP solvers to solve the subproblems, combining the solutions until a solution for the whole problem is obtained.
+The \mbox{D-FLAT}~\cite{dflat} project, developed by the Database and Artificial Intelligence group of Technical University Vienna, makes use of problem structure to solve computational problems with the help of Answer Set Programming.
+It uses tree decompositions~\cite{treedecomp} to decompose problems into smaller subproblems and then uses traditional ASP solvers to solve the subproblems, combining the solutions until a solution for the whole problem is obtained.
 
-D-FLAT uses clasp as ASP solver. clasp is a powerful solver offering vast possibilities to optimize its performance. While the default configuration is robust for most problems, it is the case that for some problems, different configurations perform better. Identifying those problems by hand is tedious and most of the time not desirable, therefore claspfolio was developed whichuses algorithm selection techniques to automatically select promising configurations. This resulted in a huge performance gain, allowing claspfolio to outperform traditional ASP solvers.
+D-FLAT uses \inline$clasp$~\cite{clasp} as ASP solver. \inline$clasp$ is a powerful solver offering a lot of possibilities to optimize its performance. While the default configuration is robust for most problems, it is the case that for some problems different configurations perform better. Identifying these problems by hand is tedious and most of the time not desirable, therefore \inline$claspfolio$~\cite{claspfolio} was developed which uses algorithm selection techniques to automatically select promising configurations. This resulted in a huge performance gain, allowing \inline$claspfolio$ to outperform traditional ASP solvers.
 
-The goal of the project was to apply algorithm selection techniques for clasp as used in claspfolio to see how this affects the performance of D-FLAT. Since D-FLAT only uses clasp to solve subproblems it was not clear how algorithm selection techniques affect its performance.
+\paragraph{Goal} The goal of the project was to apply algorithm selection techniques for \inline$clasp$ as used in \inline$claspfolio$ to see how this affects the performance of \mbox{D-FLAT}. Since \mbox{D-FLAT} only uses \inline$clasp$ to solve small subproblems it was not clear how algorithm selection techniques affect its performance. To answer this question, benchmarks and machine learning experiments had to be done.
 \section{Design}
 \input{design}
 \section{Implementation}
@@ -38,6 +60,8 @@ The goal of the project was to apply algorithm selection techniques for clasp as
 \label{sec:ml}
 \input{ml}
 
+\section{Conclusion}
+\input{conclusion}
 \bibliographystyle{plain}
 \bibliography{references}
 \end{document}

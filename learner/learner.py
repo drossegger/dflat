@@ -1,6 +1,8 @@
 from test.FeatureExtractors import *
 from input.ConfigParser import ConfigParser 
 from input.TextReader import LBReader
+from base.Containers import Instance
+from classification.Classifier import SVMClassifier
 import argparse as ap
 
 c=ConfigParser()
@@ -13,14 +15,24 @@ def learn(args):
 	#TODO Test
 
 def generateModel(args):
-	lb=LBReader(args.learningbase,c.features)
-	lb.read()
-
-
-	
+	lb=LBReader(args.learningbase,c.features).read()
+	clf=SVMClassifier(c,lb[0],lb[1])
+	clf.prepare()
+	clf.buildModel()
+	clf.saveModel(args.model)
 
 def solve(args):
-	print "SOLVING"
+	i=Instance()
+	i.program=args.encoding
+	i.inputfile=args.instance
+	i.edges.append(args.e)
+	fe=[GringoFeatureExtractor(c.gringo,[i]),EdgeFeatureExtractor([i]),DynamicFeatureExtractor(c.dflat,[i])]
+	for f in fe:
+		i=f.extract()
+	clf=SVMClassifier()
+	clf=clf.loadModel(args.model)
+	print clf.predict(i[0].features)
+
 
 cliparse=ap.ArgumentParser(description='D-FLAT Learner, make sure to edit config.xml to your needs.')
 clisp=cliparse.add_subparsers()
@@ -37,6 +49,7 @@ parser_gmod.set_defaults(func=generateModel)
 parser_solve=clisp.add_parser('solve')
 parser_solve.add_argument('--model',default='default.mod',help="set the model file")
 parser_solve.add_argument('-e',help="specify (multiple) edge predicates")
+parser_solve.add_argument('--args',default="")
 parser_solve.add_argument('encoding')
 parser_solve.add_argument('instance')
 parser_solve.set_defaults(func=solve)
